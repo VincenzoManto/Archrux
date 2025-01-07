@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
-import { format, set } from 'date-fns'
+import { format } from 'date-fns'
+import { Message } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
 import {
   IconArrowLeft,
@@ -16,10 +17,6 @@ import {
   IconTrash,
 } from '@tabler/icons-react'
 import Avatar from 'boring-avatars'
-import memoize from 'memoize'
-import ReactMarkdown from 'react-markdown'
-import gfm from 'remark-gfm'
-import { combineLatest } from 'rxjs'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -30,109 +27,43 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { FakeProgress } from '../../components/fake-progress'
-import { toast } from '../../hooks/use-toast'
-import {
-  Chat,
-  Message,
-  ServiceAutomate,
-  workerListOutput,
-} from '../../lib/ServiceAutomate'
-import { getToken } from '../../lib/utils'
+import { Project } from '../../lib/publicTypes'
 import './Chat.css'
 
-let saClient: ServiceAutomate
-
-export default function Chats() {
-  let conversations: workerListOutput[] = []
+export default function Projects() {
   const [search, setSearch] = useState('')
-  const [selectedWorker, setSelectedWorker] = useState<workerListOutput | null>(
-    null
-  )
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [waitingMessage, setWaitingMessage] = useState(false)
-  const [mobileSelectedWorker, setMobileSelectedWorker] =
-    useState<workerListOutput | null>(null)
-  const [filteredChats, setFilteredChats] = useState<Chat[]>([])
+  const [mobileSelectedProject, setMobileSelectedProject] =
+    useState<Project | null>(null)
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [selectedChat, setSelectedChat] = useState<string | null>(null)
-  const [filteredWorkers, setFilteredWorkers] = useState<workerListOutput[]>([])
+  const [filteredWorkers, setFilteredWorkers] = useState<Project[]>([])
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [socket, setSocket] = useState<WebSocket>()
   const [websocketData, setWebsocketData] = useState({
     websocket: '',
-    workerId: '',
+    id: '',
     customerId: '',
-    chatId: '',
+    projectId: '',
   })
   const [text, setText] = useState('')
 
   const navigate = useNavigate()
-  let w: any;
+  let w: any
 
-  let getChats = async (workerId: string) => {
-    setLoading(true)
-    const result = await saClient.chatList(workerId)
-    result.forEach((e) => {
-      e.createdAt = new Date(Math.round(+e.createdAt)) as any
-    })
-    setLoading(false)
-    return result
-  }
+  let getProjects = async (id: string) => {}
 
-  let getChatMessages = async (workerId: string, chatId: string) => {
-    setLoading(true)
-    const results = await saClient.messagesList(workerId, chatId)
-    setSelectedChat(chatId)
-    setLoading(false)
-    return results
-  }
-
-  let getWorkers = async () => {
-    setLoading(true)
-    const results = await saClient.workerList()
-    setLoading(false)
-    return results
-  }
-
-  let getChatsMem = memoize(getChats)
-  let getWorkersMem = memoize(getWorkers)
-  let getChatMessagesMem = memoize(getChatMessages)
-
-  async function selectWorker(worker: workerListOutput) {
+  async function selectProject(worker: Project) {
     w = worker
     setSelectedChat(null)
-    setMobileSelectedWorker(worker)
-    setSelectedWorker(worker)
+    setMobileSelectedProject(worker)
+    setSelectedProject(worker)
 
-    const data = await getChatsMem(worker.workerId)
-    setFilteredChats(data)
-    return selectedWorker;
-  }
-
-  useEffect(() => {
-    getToken().then(async (token: string) => {
-      saClient = new ServiceAutomate({
-        token: token,
-        domain: 'test.serviceautomate.com',
-      })
-      conversations = (await getWorkersMem()).map((e) => {
-        return {
-          ...e,
-        }
-      })
-      setFilteredWorkers(conversations)
-    })
-  }, [])
-
-  function openChat(workerId: string, chatId: string) {
-    combineLatest([
-      getChatMessagesMem(workerId, chatId),
-      saClient.startWebsocket(workerId, chatId),
-    ]).subscribe(([data, w]) => {
-      setMessages(data.reverse())
-      setWebsocketData(w)
-      const s = new WebSocket(w.websocket)
-      setSocket(s)
-    })
+    const data = await getProjectsMem(worker.id)
+    setFilteredProjects(data)
+    return selectedProject
   }
 
   function cleanUrls(text: string) {
@@ -148,132 +79,9 @@ export default function Chats() {
     })
   }
 
-  async function newChat() {
-    if (!selectedWorker && !w) return
-    const sw = w || selectedWorker
-    const ws = await saClient.startWebsocket(sw?.workerId!)
-    setWebsocketData(ws)
-    w = null;
-    const s = new WebSocket(ws.websocket)
-    setSocket(s)
-    setSelectedChat(ws.chatId)
-    getChats(sw.workerId)
-    setFilteredChats([
-      {
-        chatId: ws.chatId,
-        createdAt: new Date(),
-        chatProperties: {
-          title: 'New Chat',
-        },
-        objectId: Date.now().toFixed(2),
-      } as any,
-      ...filteredChats,
-    ])
-    setMessages([])
-  }
-
-  async function sendMessage(message: string) {
-    if (!selectedWorker || !socket) return
-    setWaitingMessage(true)
-    const newMessage: Message = {
-      objectId: Date.now().toFixed(2),
-      expiresAt: Date.now(),
-      customerId: '1',
-      messages: [
-        {
-          content: [
-            {
-              type: 'text',
-              text: {
-                value: message,
-              },
-            },
-          ],
-          role: 'user',
-        },
-      ],
-    }
-    socket.send(
-      JSON.stringify({
-        action: 'chat',
-        workerId: websocketData.workerId,
-        customerId: websocketData.customerId,
-        prompt: message,
-      })
-    )
-    setText('')
-    setMessages([newMessage, ...messages])
-  }
-
-  const handleMessages = (event: any) => {
-    const data = JSON.parse(event.data)
-    const newMessage: Message = {
-      objectId: Date.now().toFixed(2),
-      expiresAt: Date.now(),
-      customerId: '1',
-      messages: [
-        {
-          content: [
-            {
-              type: 'text',
-              text: {
-                value: data.message,
-              },
-            },
-          ],
-          role: 'assistant',
-        },
-      ],
-    }
-    setWaitingMessage(false)
-
-    setMessages([newMessage, ...messages])
-    console.log(messages)
-  }
-
-  function deleteWorker(workerId: string) {
+  function deleteProject(id: string) {
     setLoading(true)
-    saClient
-      .workerDelete(workerId)
-      .then(() => {
-        setFilteredWorkers((prev) =>
-          prev.filter((w) => w.workerId !== workerId)
-        )
-        setLoading(false)
-
-        toast({
-          title: 'Everything is fine',
-        }).dismiss(3000)
-      })
-      .catch(() => {
-        setLoading(false)
-
-        toast({
-          title: 'Error',
-          description: 'An error occurred while deleting the worker',
-        }).dismiss(3000)
-      })
   }
-
-  useEffect(() => {
-    if (socket) {
-      socket.addEventListener('open', function (event) {
-        console.log('WebSocket connection established')
-      })
-
-      socket.addEventListener('message', handleMessages)
-
-      // Connection closed
-      socket.addEventListener('close', function (event) {
-        console.log('WebSocket connection closed')
-      })
-
-      // Error occurred
-      socket.addEventListener('error', function (event) {
-        console.error('WebSocket error:', event)
-      })
-    }
-  }, [socket, handleMessages])
 
   return (
     <>
@@ -289,14 +97,14 @@ export default function Chats() {
         <FakeProgress />
       ) : (
         <Main fixed>
-          {!selectedWorker ? (
+          {!selectedProject ? (
             <>
               <div className='flex items-center justify-between mb-4'>
                 <h1 className='text-2xl font-bold'>Projects</h1>
                 <Button
                   onClick={() =>
                     navigate({
-                      to: '/chats/agent/new/settings',
+                      to: '/Projects/agent/new/settings',
                     } as any)
                   }
                   variant='ghost'
@@ -308,7 +116,7 @@ export default function Chats() {
               <ul className='faded-bottom no-scrollbar grid gap-4 overflow-auto pb-16 pt-4 md:grid-cols-2 lg:grid-cols-3'>
                 {filteredWorkers.map((app) => (
                   <li
-                    key={app.workerId}
+                    key={app.id}
                     className='rounded-lg border p-4 hover:shadow-md'
                   >
                     <div className='mb-8 flex items-center justify-between'>
@@ -316,7 +124,7 @@ export default function Chats() {
                         className={`flex size-10 items-center justify-center rounded-lg bg-muted p-2`}
                       >
                         <Avatar
-                          name={app.workerName}
+                          name={app.name}
                           variant='beam'
                           colors={['#000', '#fff', '#000', '#fff']}
                           size={50}
@@ -326,7 +134,7 @@ export default function Chats() {
                         <Button
                           onClick={() =>
                             navigate({
-                              to: `/chats/agent/${app.workerId}/settings`,
+                              to: `/Projects/agent/${app.id}/settings`,
                             })
                           }
                           className='mr-2'
@@ -339,7 +147,7 @@ export default function Chats() {
                           />
                         </Button>
                         <Button
-                          onClick={() => deleteWorker(app.workerId)}
+                          onClick={() => deleteProject(app.id)}
                           className='mr-2'
                           variant='outline'
                           size='sm'
@@ -350,7 +158,7 @@ export default function Chats() {
                           />
                         </Button>
                         <Button
-                          onClick={() => selectWorker(app)}
+                          onClick={() => selectProject(app)}
                           variant='outline'
                           size='sm'
                         >
@@ -364,15 +172,13 @@ export default function Chats() {
                     <div
                       className='cursor-pointer'
                       onClick={async () => {
-                        const w = await selectWorker(app);
+                        const w = await selectProject(app)
                         console.log(w)
-                        newChat();
+                        // newChat();
                       }}
                     >
-                      <h2 className='mb-1 font-semibold'>{app.workerName}</h2>
-                      <p className='line-clamp-2 text-gray-500'>
-                        {app.workerId}
-                      </p>
+                      <h2 className='mb-1 font-semibold'>{app.name}</h2>
+                      <p className='line-clamp-2 text-gray-500'>{app.id}</p>
                     </div>
                   </li>
                 ))}
@@ -388,7 +194,7 @@ export default function Chats() {
                         size='icon'
                         variant='ghost'
                         className='rounded-lg'
-                        onClick={() => setSelectedWorker(null)}
+                        onClick={() => setSelectedProject(null)}
                       >
                         <IconArrowLeft
                           size={24}
@@ -396,7 +202,7 @@ export default function Chats() {
                         />
                       </Button>
                       <h2 className='text-2xl font-bold'>
-                        Chats of {selectedWorker.workerName}
+                        Projects of {selectedProject.name}
                       </h2>
                     </div>
 
@@ -404,7 +210,9 @@ export default function Chats() {
                       size='icon'
                       variant='ghost'
                       className='rounded-lg'
-                      onClick={() => newChat()}
+                      onClick={() => {
+                        // newChat()
+                      }}
                     >
                       <IconMessagePlus
                         size={24}
@@ -419,30 +227,30 @@ export default function Chats() {
                     <input
                       type='text'
                       className='w-full flex-1 bg-inherit text-sm focus-visible:outline-none'
-                      placeholder='Search chat...'
+                      placeholder='Search project...'
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                     />
                   </label>
                 </div>
                 <ScrollArea className='-mx-3 h-full p-3'>
-                  {filteredChats.map((chat) => {
+                  {filteredProjects.map((project) => {
                     return (
-                      <Fragment key={chat.chatId}>
+                      <Fragment key={project.id}>
                         <button
                           type='button'
                           className={cn(
                             '-mx-1 flex w-full rounded-md px-2 py-2 text-left text-sm hover:bg-secondary/75',
-                            chat.chatId === websocketData?.chatId &&
+                            project.id === websocketData?.projectId &&
                               'bg-primary-foreground'
                           )}
                           onClick={() => {
-                            openChat(selectedWorker.workerId, chat.chatId)
+                            // openChat(selectedProject.id, project.projectId)
                           }}
                         >
                           <div className='flex gap-2 w-full'>
                             <Avatar
-                              name={selectedWorker.workerName}
+                              name={selectedProject.name}
                               variant='beam'
                               colors={['#000', '#fff', '#000', '#fff']}
                               size={50}
@@ -450,10 +258,10 @@ export default function Chats() {
 
                             <div>
                               <span className='col-start-2 row-span-2 font-medium'>
-                                {format(chat.createdAt, 'dd/MM/yyyy h:mm a')}
+                                {format(project.createdAt, 'dd/MM/yyyy h:mm a')}
                               </span>
                               <span className='col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis text-muted-foreground'>
-                                {chat?.chatProperties?.title}
+                                {project?.name}
                               </span>
                             </div>
                           </div>
@@ -468,8 +276,8 @@ export default function Chats() {
               {selectedChat ? (
                 <div
                   className={cn(
-                    'absolute inset-0 hworkerIdden left-full z-50 w-full flex-1 flex-col rounded-md border bg-primary-foreground shadow-sm transition-all duration-200 sm:static sm:z-auto sm:flex',
-                    mobileSelectedWorker && 'left-0 flex'
+                    'absolute inset-0 hidden left-full z-50 w-full flex-1 flex-col rounded-md border bg-primary-foreground shadow-sm transition-all duration-200 sm:static sm:z-auto sm:flex',
+                    mobileSelectedProject && 'left-0 flex'
                   )}
                 >
                   <div className='mb-1 flex flex-none justify-between rounded-t-md bg-secondary p-4 shadow-lg'>
@@ -477,24 +285,24 @@ export default function Chats() {
                       <Button
                         size='icon'
                         variant='ghost'
-                        className='-ml-2 h-full sm:hworkerIdden'
-                        onClick={() => setMobileSelectedWorker(null)}
+                        className='-ml-2 h-full sm:hidden'
+                        onClick={() => setMobileSelectedProject(null)}
                       >
                         <IconArrowLeft />
                       </Button>
                       <div className='flex items-center gap-2 lg:gap-4'>
                         <Avatar
-                          name={selectedWorker.workerName}
+                          name={selectedProject.name}
                           variant='beam'
                           colors={['#000', '#fff', '#000', '#fff']}
                           size={50}
                         />
                         <div>
                           <span className='col-start-2 row-span-2 text-sm font-medium lg:text-base'>
-                            {selectedWorker.workerName}
+                            {selectedProject.name}
                           </span>
                           <span className='col-start-2 row-span-2 row-start-2 line-clamp-1 block max-w-32 text-ellipsis text-nowrap text-xs text-muted-foreground lg:max-w-none lg:text-sm'>
-                            {selectedWorker.workerName}
+                            {selectedProject.name}
                           </span>
                         </div>
                       </div>
@@ -504,12 +312,12 @@ export default function Chats() {
                       <Button
                         onClick={() =>
                           navigate({
-                            to: `/chats/agent/${selectedWorker.workerId}/settings`,
+                            to: `/Projects/agent/${selectedProject.id}/settings`,
                           })
                         }
                         size='icon'
                         variant='ghost'
-                        className='hworkerIdden size-8 rounded-full sm:inline-flex lg:size-10'
+                        className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
                       >
                         <IconEdit
                           size={22}
@@ -528,12 +336,12 @@ export default function Chats() {
 
                   <div className='flex flex-1 flex-col gap-2 rounded-md px-4 pb-4 pt-0'>
                     <div className='flex size-full flex-1'>
-                      <div className='chat-text-container relative -mr-4 flex flex-1 flex-col overflow-y-hworkerIdden'>
-                        <div className='chat-flex flex h-40 w-full flex-grow flex-col-reverse justify-start gap-4 overflow-y-auto py-2 pb-4 pr-4'>
+                      <div className='project-text-container relative -mr-4 flex flex-1 flex-col overflow-y-hidden'>
+                        <div className='project-flex flex h-40 w-full flex-grow flex-col-reverse justify-start gap-4 overflow-y-auto py-2 pb-4 pr-4'>
                           {waitingMessage && (
                             <small className='linear-wipe'>typing...</small>
                           )}
-                          {messages?.map((msg) => {
+                          {/* {messages?.map((msg) => {
                             const text =
                               msg.messages?.[0]?.content?.[0]?.text?.value
                             const user = msg.messages[0]?.role
@@ -541,7 +349,7 @@ export default function Chats() {
                               <div
                                 key={msg.objectId}
                                 className={cn(
-                                  'chat-box max-w-72 break-words px-3 py-2 shadow-lg',
+                                  'project-box max-w-72 break-words px-3 py-2 shadow-lg',
                                   user === 'user'
                                     ? 'self-end rounded-[16px_16px_0_16px] bg-primary/85 text-primary-foreground/75'
                                     : 'self-start rounded-[16px_16px_16px_0] bg-secondary'
@@ -560,7 +368,7 @@ export default function Chats() {
                                 </span>
                               </div>
                             )
-                          })}
+                          })} */}
                         </div>
                       </div>
                     </div>
@@ -581,7 +389,7 @@ export default function Chats() {
                           size='icon'
                           type='button'
                           variant='ghost'
-                          className='hworkerIdden h-8 rounded-md lg:inline-flex'
+                          className='hidden h-8 rounded-md lg:inline-flex'
                         >
                           <IconPhotoPlus
                             size={20}
@@ -592,7 +400,7 @@ export default function Chats() {
                           size='icon'
                           type='button'
                           variant='ghost'
-                          className='hworkerIdden h-8 rounded-md lg:inline-flex'
+                          className='hidden h-8 rounded-md lg:inline-flex'
                         >
                           <IconPaperclip
                             size={20}
@@ -605,7 +413,7 @@ export default function Chats() {
                           onChange={(e) => setText(e.target.value)}
                           onKeyUp={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
-                              sendMessage(text)
+                              // sendMessage(text)
                             }
                           }}
                           value={text}
@@ -616,10 +424,12 @@ export default function Chats() {
                         />
                       </label>
                       <Button
-                        onClick={() => sendMessage(text)}
+                        onClick={() => {
+                          // sendMessage(text)
+                        }}
                         variant='ghost'
                         size='icon'
-                        className='hworkerIdden sm:inline-flex'
+                        className='hidden sm:inline-flex'
                       >
                         <IconSend size={20} />
                       </Button>
@@ -633,9 +443,11 @@ export default function Chats() {
                     className='stroke-muted-foreground'
                     strokeWidth={1.3}
                   />
-                  <h2 className='mt-4 text-2xl font-bold'>No chat selected</h2>
+                  <h2 className='mt-4 text-2xl font-bold'>
+                    No project selected
+                  </h2>
                   <p className='text-muted-foreground'>
-                    Select a chat to start messaging
+                    Select a project to start messaging
                   </p>
                 </div>
               )}
