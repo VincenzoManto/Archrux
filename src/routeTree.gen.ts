@@ -43,11 +43,11 @@ const AuthenticatedTasksIndexLazyImport = createFileRoute(
 const AuthenticatedSettingsIndexLazyImport = createFileRoute(
   '/_authenticated/settings/',
 )()
+const AuthenticatedProjectsIndexLazyImport = createFileRoute(
+  '/_authenticated/projects/',
+)()
 const AuthenticatedHelpCenterIndexLazyImport = createFileRoute(
   '/_authenticated/help-center/',
-)()
-const AuthenticatedChatsIndexLazyImport = createFileRoute(
-  '/_authenticated/chats/',
 )()
 const AuthenticatedAppsIndexLazyImport = createFileRoute(
   '/_authenticated/apps/',
@@ -64,18 +64,17 @@ const AuthenticatedSettingsAppearanceLazyImport = createFileRoute(
 const AuthenticatedSettingsAccountLazyImport = createFileRoute(
   '/_authenticated/settings/account',
 )()
-const AuthenticatedChatsAgentWorkerIdRouteLazyImport = createFileRoute(
-  '/_authenticated/chats/agent/$workerId',
+const AuthenticatedProjectsSettingsWorkerIdRouteLazyImport = createFileRoute(
+  '/_authenticated/projects/settings/$workerId',
 )()
-const AuthenticatedChatsAgentWorkerIdIndexLazyImport = createFileRoute(
-  '/_authenticated/chats/agent/$workerId/',
+const AuthenticatedProjectsSettingsWorkerIdIndexLazyImport = createFileRoute(
+  '/_authenticated/projects/settings/$workerId/',
 )()
-const AuthenticatedChatsAgentWorkerIdSettingsLazyImport = createFileRoute(
-  '/_authenticated/chats/agent/$workerId/settings',
+const AuthenticatedProjectsSettingsWorkerIdSettingsLazyImport = createFileRoute(
+  '/_authenticated/projects/settings/$workerId/settings',
 )()
-const AuthenticatedChatsAgentWorkerIdAreaIndexLazyImport = createFileRoute(
-  '/_authenticated/chats/agent/$workerId/$area/',
-)()
+const AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyImport =
+  createFileRoute('/_authenticated/projects/settings/$workerId/$area/')()
 
 // Create/Update Routes
 
@@ -210,6 +209,15 @@ const AuthenticatedSettingsIndexLazyRoute =
     import('./routes/_authenticated/settings/index.lazy').then((d) => d.Route),
   )
 
+const AuthenticatedProjectsIndexLazyRoute =
+  AuthenticatedProjectsIndexLazyImport.update({
+    id: '/projects/',
+    path: '/projects/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/projects/index.lazy').then((d) => d.Route),
+  )
+
 const AuthenticatedHelpCenterIndexLazyRoute =
   AuthenticatedHelpCenterIndexLazyImport.update({
     id: '/help-center/',
@@ -219,15 +227,6 @@ const AuthenticatedHelpCenterIndexLazyRoute =
     import('./routes/_authenticated/help-center/index.lazy').then(
       (d) => d.Route,
     ),
-  )
-
-const AuthenticatedChatsIndexLazyRoute =
-  AuthenticatedChatsIndexLazyImport.update({
-    id: '/chats/',
-    path: '/chats/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any).lazy(() =>
-    import('./routes/_authenticated/chats/index.lazy').then((d) => d.Route),
   )
 
 const AuthenticatedAppsIndexLazyRoute = AuthenticatedAppsIndexLazyImport.update(
@@ -284,47 +283,47 @@ const AuthenticatedSettingsAccountLazyRoute =
     ),
   )
 
-const AuthenticatedChatsAgentWorkerIdRouteLazyRoute =
-  AuthenticatedChatsAgentWorkerIdRouteLazyImport.update({
-    id: '/chats/agent/$workerId',
-    path: '/chats/agent/$workerId',
+const AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute =
+  AuthenticatedProjectsSettingsWorkerIdRouteLazyImport.update({
+    id: '/projects/settings/$workerId',
+    path: '/projects/settings/$workerId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any).lazy(() =>
-    import('./routes/_authenticated/chats/agent/$workerId/route.lazy').then(
-      (d) => d.Route,
-    ),
+    import(
+      './routes/_authenticated/projects/settings/$workerId/route.lazy'
+    ).then((d) => d.Route),
   )
 
-const AuthenticatedChatsAgentWorkerIdIndexLazyRoute =
-  AuthenticatedChatsAgentWorkerIdIndexLazyImport.update({
+const AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute =
+  AuthenticatedProjectsSettingsWorkerIdIndexLazyImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedChatsAgentWorkerIdRouteLazyRoute,
-  } as any).lazy(() =>
-    import('./routes/_authenticated/chats/agent/$workerId/index.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const AuthenticatedChatsAgentWorkerIdSettingsLazyRoute =
-  AuthenticatedChatsAgentWorkerIdSettingsLazyImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedChatsAgentWorkerIdRouteLazyRoute,
-  } as any).lazy(() =>
-    import('./routes/_authenticated/chats/agent/$workerId/settings.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute =
-  AuthenticatedChatsAgentWorkerIdAreaIndexLazyImport.update({
-    id: '/$area/',
-    path: '/$area/',
-    getParentRoute: () => AuthenticatedChatsAgentWorkerIdRouteLazyRoute,
+    getParentRoute: () => AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute,
   } as any).lazy(() =>
     import(
-      './routes/_authenticated/chats/agent/$workerId/$area/index.lazy'
+      './routes/_authenticated/projects/settings/$workerId/index.lazy'
+    ).then((d) => d.Route),
+  )
+
+const AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute =
+  AuthenticatedProjectsSettingsWorkerIdSettingsLazyImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/_authenticated/projects/settings/$workerId/settings.lazy'
+    ).then((d) => d.Route),
+  )
+
+const AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute =
+  AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyImport.update({
+    id: '/$area/',
+    path: '/$area/',
+    getParentRoute: () => AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/_authenticated/projects/settings/$workerId/$area/index.lazy'
     ).then((d) => d.Route),
   )
 
@@ -465,18 +464,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppsIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/_authenticated/chats/': {
-      id: '/_authenticated/chats/'
-      path: '/chats'
-      fullPath: '/chats'
-      preLoaderRoute: typeof AuthenticatedChatsIndexLazyImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
       fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/': {
+      id: '/_authenticated/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/settings/': {
@@ -500,33 +499,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/_authenticated/chats/agent/$workerId': {
-      id: '/_authenticated/chats/agent/$workerId'
-      path: '/chats/agent/$workerId'
-      fullPath: '/chats/agent/$workerId'
-      preLoaderRoute: typeof AuthenticatedChatsAgentWorkerIdRouteLazyImport
+    '/_authenticated/projects/settings/$workerId': {
+      id: '/_authenticated/projects/settings/$workerId'
+      path: '/projects/settings/$workerId'
+      fullPath: '/projects/settings/$workerId'
+      preLoaderRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/_authenticated/chats/agent/$workerId/settings': {
-      id: '/_authenticated/chats/agent/$workerId/settings'
+    '/_authenticated/projects/settings/$workerId/settings': {
+      id: '/_authenticated/projects/settings/$workerId/settings'
       path: '/settings'
-      fullPath: '/chats/agent/$workerId/settings'
-      preLoaderRoute: typeof AuthenticatedChatsAgentWorkerIdSettingsLazyImport
-      parentRoute: typeof AuthenticatedChatsAgentWorkerIdRouteLazyImport
+      fullPath: '/projects/settings/$workerId/settings'
+      preLoaderRoute: typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyImport
+      parentRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyImport
     }
-    '/_authenticated/chats/agent/$workerId/': {
-      id: '/_authenticated/chats/agent/$workerId/'
+    '/_authenticated/projects/settings/$workerId/': {
+      id: '/_authenticated/projects/settings/$workerId/'
       path: '/'
-      fullPath: '/chats/agent/$workerId/'
-      preLoaderRoute: typeof AuthenticatedChatsAgentWorkerIdIndexLazyImport
-      parentRoute: typeof AuthenticatedChatsAgentWorkerIdRouteLazyImport
+      fullPath: '/projects/settings/$workerId/'
+      preLoaderRoute: typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyImport
+      parentRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyImport
     }
-    '/_authenticated/chats/agent/$workerId/$area/': {
-      id: '/_authenticated/chats/agent/$workerId/$area/'
+    '/_authenticated/projects/settings/$workerId/$area/': {
+      id: '/_authenticated/projects/settings/$workerId/$area/'
       path: '/$area'
-      fullPath: '/chats/agent/$workerId/$area'
-      preLoaderRoute: typeof AuthenticatedChatsAgentWorkerIdAreaIndexLazyImport
-      parentRoute: typeof AuthenticatedChatsAgentWorkerIdRouteLazyImport
+      fullPath: '/projects/settings/$workerId/$area'
+      preLoaderRoute: typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyImport
+      parentRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyImport
     }
   }
 }
@@ -559,36 +558,36 @@ const AuthenticatedSettingsRouteLazyRouteWithChildren =
     AuthenticatedSettingsRouteLazyRouteChildren,
   )
 
-interface AuthenticatedChatsAgentWorkerIdRouteLazyRouteChildren {
-  AuthenticatedChatsAgentWorkerIdSettingsLazyRoute: typeof AuthenticatedChatsAgentWorkerIdSettingsLazyRoute
-  AuthenticatedChatsAgentWorkerIdIndexLazyRoute: typeof AuthenticatedChatsAgentWorkerIdIndexLazyRoute
-  AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute: typeof AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute
+interface AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteChildren {
+  AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute: typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
+  AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute: typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
+  AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute: typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
 }
 
-const AuthenticatedChatsAgentWorkerIdRouteLazyRouteChildren: AuthenticatedChatsAgentWorkerIdRouteLazyRouteChildren =
+const AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteChildren: AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteChildren =
   {
-    AuthenticatedChatsAgentWorkerIdSettingsLazyRoute:
-      AuthenticatedChatsAgentWorkerIdSettingsLazyRoute,
-    AuthenticatedChatsAgentWorkerIdIndexLazyRoute:
-      AuthenticatedChatsAgentWorkerIdIndexLazyRoute,
-    AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute:
-      AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute,
+    AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute:
+      AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute,
+    AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute:
+      AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute,
+    AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute:
+      AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute,
   }
 
-const AuthenticatedChatsAgentWorkerIdRouteLazyRouteWithChildren =
-  AuthenticatedChatsAgentWorkerIdRouteLazyRoute._addFileChildren(
-    AuthenticatedChatsAgentWorkerIdRouteLazyRouteChildren,
+const AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren =
+  AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute._addFileChildren(
+    AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteChildren,
   )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteLazyRoute: typeof AuthenticatedSettingsRouteLazyRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAppsIndexLazyRoute: typeof AuthenticatedAppsIndexLazyRoute
-  AuthenticatedChatsIndexLazyRoute: typeof AuthenticatedChatsIndexLazyRoute
   AuthenticatedHelpCenterIndexLazyRoute: typeof AuthenticatedHelpCenterIndexLazyRoute
+  AuthenticatedProjectsIndexLazyRoute: typeof AuthenticatedProjectsIndexLazyRoute
   AuthenticatedTasksIndexLazyRoute: typeof AuthenticatedTasksIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
-  AuthenticatedChatsAgentWorkerIdRouteLazyRoute: typeof AuthenticatedChatsAgentWorkerIdRouteLazyRouteWithChildren
+  AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -596,12 +595,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedSettingsRouteLazyRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAppsIndexLazyRoute: AuthenticatedAppsIndexLazyRoute,
-  AuthenticatedChatsIndexLazyRoute: AuthenticatedChatsIndexLazyRoute,
   AuthenticatedHelpCenterIndexLazyRoute: AuthenticatedHelpCenterIndexLazyRoute,
+  AuthenticatedProjectsIndexLazyRoute: AuthenticatedProjectsIndexLazyRoute,
   AuthenticatedTasksIndexLazyRoute: AuthenticatedTasksIndexLazyRoute,
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
-  AuthenticatedChatsAgentWorkerIdRouteLazyRoute:
-    AuthenticatedChatsAgentWorkerIdRouteLazyRouteWithChildren,
+  AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute:
+    AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -626,15 +625,15 @@ export interface FileRoutesByFullPath {
   '/settings/display': typeof AuthenticatedSettingsDisplayLazyRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsLazyRoute
   '/apps': typeof AuthenticatedAppsIndexLazyRoute
-  '/chats': typeof AuthenticatedChatsIndexLazyRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexLazyRoute
+  '/projects': typeof AuthenticatedProjectsIndexLazyRoute
   '/settings/': typeof AuthenticatedSettingsIndexLazyRoute
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
-  '/chats/agent/$workerId': typeof AuthenticatedChatsAgentWorkerIdRouteLazyRouteWithChildren
-  '/chats/agent/$workerId/settings': typeof AuthenticatedChatsAgentWorkerIdSettingsLazyRoute
-  '/chats/agent/$workerId/': typeof AuthenticatedChatsAgentWorkerIdIndexLazyRoute
-  '/chats/agent/$workerId/$area': typeof AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute
+  '/projects/settings/$workerId': typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren
+  '/projects/settings/$workerId/settings': typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
+  '/projects/settings/$workerId/': typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
+  '/projects/settings/$workerId/$area': typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -654,14 +653,14 @@ export interface FileRoutesByTo {
   '/settings/display': typeof AuthenticatedSettingsDisplayLazyRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsLazyRoute
   '/apps': typeof AuthenticatedAppsIndexLazyRoute
-  '/chats': typeof AuthenticatedChatsIndexLazyRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexLazyRoute
+  '/projects': typeof AuthenticatedProjectsIndexLazyRoute
   '/settings': typeof AuthenticatedSettingsIndexLazyRoute
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
-  '/chats/agent/$workerId/settings': typeof AuthenticatedChatsAgentWorkerIdSettingsLazyRoute
-  '/chats/agent/$workerId': typeof AuthenticatedChatsAgentWorkerIdIndexLazyRoute
-  '/chats/agent/$workerId/$area': typeof AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute
+  '/projects/settings/$workerId/settings': typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
+  '/projects/settings/$workerId': typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
+  '/projects/settings/$workerId/$area': typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -685,15 +684,15 @@ export interface FileRoutesById {
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayLazyRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsLazyRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexLazyRoute
-  '/_authenticated/chats/': typeof AuthenticatedChatsIndexLazyRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexLazyRoute
+  '/_authenticated/projects/': typeof AuthenticatedProjectsIndexLazyRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexLazyRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexLazyRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexLazyRoute
-  '/_authenticated/chats/agent/$workerId': typeof AuthenticatedChatsAgentWorkerIdRouteLazyRouteWithChildren
-  '/_authenticated/chats/agent/$workerId/settings': typeof AuthenticatedChatsAgentWorkerIdSettingsLazyRoute
-  '/_authenticated/chats/agent/$workerId/': typeof AuthenticatedChatsAgentWorkerIdIndexLazyRoute
-  '/_authenticated/chats/agent/$workerId/$area/': typeof AuthenticatedChatsAgentWorkerIdAreaIndexLazyRoute
+  '/_authenticated/projects/settings/$workerId': typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren
+  '/_authenticated/projects/settings/$workerId/settings': typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
+  '/_authenticated/projects/settings/$workerId/': typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
+  '/_authenticated/projects/settings/$workerId/$area/': typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -717,15 +716,15 @@ export interface FileRouteTypes {
     | '/settings/display'
     | '/settings/notifications'
     | '/apps'
-    | '/chats'
     | '/help-center'
+    | '/projects'
     | '/settings/'
     | '/tasks'
     | '/users'
-    | '/chats/agent/$workerId'
-    | '/chats/agent/$workerId/settings'
-    | '/chats/agent/$workerId/'
-    | '/chats/agent/$workerId/$area'
+    | '/projects/settings/$workerId'
+    | '/projects/settings/$workerId/settings'
+    | '/projects/settings/$workerId/'
+    | '/projects/settings/$workerId/$area'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/500'
@@ -744,14 +743,14 @@ export interface FileRouteTypes {
     | '/settings/display'
     | '/settings/notifications'
     | '/apps'
-    | '/chats'
     | '/help-center'
+    | '/projects'
     | '/settings'
     | '/tasks'
     | '/users'
-    | '/chats/agent/$workerId/settings'
-    | '/chats/agent/$workerId'
-    | '/chats/agent/$workerId/$area'
+    | '/projects/settings/$workerId/settings'
+    | '/projects/settings/$workerId'
+    | '/projects/settings/$workerId/$area'
   id:
     | '__root__'
     | '/_authenticated'
@@ -773,15 +772,15 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
     | '/_authenticated/apps/'
-    | '/_authenticated/chats/'
     | '/_authenticated/help-center/'
+    | '/_authenticated/projects/'
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
-    | '/_authenticated/chats/agent/$workerId'
-    | '/_authenticated/chats/agent/$workerId/settings'
-    | '/_authenticated/chats/agent/$workerId/'
-    | '/_authenticated/chats/agent/$workerId/$area/'
+    | '/_authenticated/projects/settings/$workerId'
+    | '/_authenticated/projects/settings/$workerId/settings'
+    | '/_authenticated/projects/settings/$workerId/'
+    | '/_authenticated/projects/settings/$workerId/$area/'
   fileRoutesById: FileRoutesById
 }
 
@@ -845,11 +844,11 @@ export const routeTree = rootRoute
         "/_authenticated/settings",
         "/_authenticated/",
         "/_authenticated/apps/",
-        "/_authenticated/chats/",
         "/_authenticated/help-center/",
+        "/_authenticated/projects/",
         "/_authenticated/tasks/",
         "/_authenticated/users/",
-        "/_authenticated/chats/agent/$workerId"
+        "/_authenticated/projects/settings/$workerId"
       ]
     },
     "/(auth)/500": {
@@ -920,12 +919,12 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/apps/index.lazy.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/chats/": {
-      "filePath": "_authenticated/chats/index.lazy.tsx",
-      "parent": "/_authenticated"
-    },
     "/_authenticated/help-center/": {
       "filePath": "_authenticated/help-center/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/projects/": {
+      "filePath": "_authenticated/projects/index.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/settings/": {
@@ -940,26 +939,26 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/users/index.lazy.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/chats/agent/$workerId": {
-      "filePath": "_authenticated/chats/agent/$workerId/route.lazy.tsx",
+    "/_authenticated/projects/settings/$workerId": {
+      "filePath": "_authenticated/projects/settings/$workerId/route.lazy.tsx",
       "parent": "/_authenticated",
       "children": [
-        "/_authenticated/chats/agent/$workerId/settings",
-        "/_authenticated/chats/agent/$workerId/",
-        "/_authenticated/chats/agent/$workerId/$area/"
+        "/_authenticated/projects/settings/$workerId/settings",
+        "/_authenticated/projects/settings/$workerId/",
+        "/_authenticated/projects/settings/$workerId/$area/"
       ]
     },
-    "/_authenticated/chats/agent/$workerId/settings": {
-      "filePath": "_authenticated/chats/agent/$workerId/settings.lazy.tsx",
-      "parent": "/_authenticated/chats/agent/$workerId"
+    "/_authenticated/projects/settings/$workerId/settings": {
+      "filePath": "_authenticated/projects/settings/$workerId/settings.lazy.tsx",
+      "parent": "/_authenticated/projects/settings/$workerId"
     },
-    "/_authenticated/chats/agent/$workerId/": {
-      "filePath": "_authenticated/chats/agent/$workerId/index.lazy.tsx",
-      "parent": "/_authenticated/chats/agent/$workerId"
+    "/_authenticated/projects/settings/$workerId/": {
+      "filePath": "_authenticated/projects/settings/$workerId/index.lazy.tsx",
+      "parent": "/_authenticated/projects/settings/$workerId"
     },
-    "/_authenticated/chats/agent/$workerId/$area/": {
-      "filePath": "_authenticated/chats/agent/$workerId/$area/index.lazy.tsx",
-      "parent": "/_authenticated/chats/agent/$workerId"
+    "/_authenticated/projects/settings/$workerId/$area/": {
+      "filePath": "_authenticated/projects/settings/$workerId/$area/index.lazy.tsx",
+      "parent": "/_authenticated/projects/settings/$workerId"
     }
   }
 }

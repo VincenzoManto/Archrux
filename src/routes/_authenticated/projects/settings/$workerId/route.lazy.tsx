@@ -2,7 +2,7 @@ import { createFileRoute, createLazyFileRoute } from '@tanstack/react-router'
 import Agent from '../../../../../features/chats/agents'
 
 export const Route = createLazyFileRoute(
-  '/_authenticated/chats/agent/$workerId',
+  '/_authenticated/projects/settings/$workerId',
 )({
   component: Agent,
 })
