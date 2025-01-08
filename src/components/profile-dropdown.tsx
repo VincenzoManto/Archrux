@@ -20,9 +20,10 @@ export function ProfileDropdown() {
   const [authentication] = useState(auth);
   const [user, setUser] = useState(authentication?.currentUser);
 
-  useEffect(() => {
-    setUser(authentication?.currentUser);
-  }, [authentication])
+  authentication.onIdTokenChanged(e => {
+    setUser(authentication?.currentUser)
+  })
+
 
   const navigate = useNavigate();
 
@@ -42,8 +43,8 @@ export function ProfileDropdown() {
         <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
           <Avatar
             name={user?.displayName}
-            variant='pixel'
-            colors={["#000", "#ffffff", "#000000", "#ffffff", "#ffa300"]} 
+            variant='beam'
+            colors={["#ffffff", "#000000", "#ffffff", "#ffa300"]} 
           />
         </Button>
       </DropdownMenuTrigger>

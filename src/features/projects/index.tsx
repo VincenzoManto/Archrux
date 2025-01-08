@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import { format } from 'date-fns'
 import { Message } from 'react-hook-form'
@@ -17,6 +17,16 @@ import {
   IconTrash,
 } from '@tabler/icons-react'
 import Avatar from 'boring-avatars'
+import { User } from 'firebase/auth'
+import {
+  DatabaseReference,
+  equalTo,
+  onValue,
+  orderByChild,
+  push,
+  query,
+  ref,
+} from 'firebase/database'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -27,6 +37,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { FakeProgress } from '../../components/fake-progress'
+import { auth, database } from '../../firebase'
 import { Project } from '../../lib/publicTypes'
 import './Chat.css'
 
@@ -38,10 +49,11 @@ export default function Projects() {
     useState<Project | null>(null)
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [selectedChat, setSelectedChat] = useState<string | null>(null)
-  const [filteredWorkers, setFilteredWorkers] = useState<Project[]>([])
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
+  const [dbRef, setDbRef] = useState<DatabaseReference>()
   const [socket, setSocket] = useState<WebSocket>()
+  const [db] = useState<any>(database)
   const [websocketData, setWebsocketData] = useState({
     websocket: '',
     id: '',
@@ -51,18 +63,47 @@ export default function Projects() {
   const [text, setText] = useState('')
 
   const navigate = useNavigate()
-  let w: any
+  const [authentication] = useState(auth)
+  let user: User | null
 
-  let getProjects = async (id: string) => {}
+  authentication.onIdTokenChanged(e => {
+    user = authentication?.currentUser;
+    console.log('id', user);
+  })
+
+  useEffect(() => {
+    console.log('effect', user);
+
+    if (!user) {
+      return
+    }
+    const vs = query(
+      ref(db, 'archs'),
+      orderByChild('customer'),
+      equalTo(user?.uid)
+    )
+    // push(ref(db, 'archs'), {'customer': 'customer', 'project': 'project', 'name': 'name', 'createdAt': 'createdAt'});
+    const unsubscribe = onValue(vs, (snapshot) => {
+      const data = snapshot.val()
+      if (data) {
+        const projects = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }))
+        setFilteredProjects(projects)
+      }
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [db, user])
 
   async function selectProject(worker: Project) {
-    w = worker
     setSelectedChat(null)
     setMobileSelectedProject(worker)
     setSelectedProject(worker)
 
-    const data = await getProjectsMem(worker.id)
-    setFilteredProjects(data)
     return selectedProject
   }
 
@@ -104,17 +145,17 @@ export default function Projects() {
                 <Button
                   onClick={() =>
                     navigate({
-                      to: '/Projects/agent/new/settings',
+                      to: '/projects/settings/new/settings',
                     } as any)
                   }
                   variant='ghost'
                 >
                   <IconPlus size={24} className='stroke-muted-foreground' />
-                  <span className='ml-2'>New agent</span>
+                  <span className='ml-2'>New project</span>
                 </Button>
               </div>
               <ul className='faded-bottom no-scrollbar grid gap-4 overflow-auto pb-16 pt-4 md:grid-cols-2 lg:grid-cols-3'>
-                {filteredWorkers.map((app) => (
+                {filteredProjects.map((app) => (
                   <li
                     key={app.id}
                     className='rounded-lg border p-4 hover:shadow-md'
@@ -125,8 +166,14 @@ export default function Projects() {
                       >
                         <Avatar
                           name={app.name}
-                          variant='beam'
-                          colors={['#000', '#fff', '#000', '#fff']}
+                          variant='pixel'
+                          colors={[
+                            '#000',
+                            '#ffffff',
+                            '#000000',
+                            '#ffffff',
+                            '#ffa300',
+                          ]}
                           size={50}
                         />
                       </div>
@@ -251,8 +298,14 @@ export default function Projects() {
                           <div className='flex gap-2 w-full'>
                             <Avatar
                               name={selectedProject.name}
-                              variant='beam'
-                              colors={['#000', '#fff', '#000', '#fff']}
+                              variant='pixel'
+                              colors={[
+                                '#000',
+                                '#ffffff',
+                                '#000000',
+                                '#ffffff',
+                                '#ffa300',
+                              ]}
                               size={50}
                             />
 
@@ -293,8 +346,14 @@ export default function Projects() {
                       <div className='flex items-center gap-2 lg:gap-4'>
                         <Avatar
                           name={selectedProject.name}
-                          variant='beam'
-                          colors={['#000', '#fff', '#000', '#fff']}
+                          variant='pixel'
+                          colors={[
+                            '#000',
+                            '#ffffff',
+                            '#000000',
+                            '#ffffff',
+                            '#ffa300',
+                          ]}
                           size={50}
                         />
                         <div>

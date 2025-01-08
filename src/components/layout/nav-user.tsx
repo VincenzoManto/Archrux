@@ -33,9 +33,9 @@ export function NavUser() {
   const [authentication] = useState(auth)
   const [user, setUser] = useState(authentication?.currentUser)
 
-  useEffect(() => {
+  authentication.onIdTokenChanged(e => {
     setUser(authentication?.currentUser)
-  }, [authentication])
+  })
 
   const navigate = useNavigate()
 
@@ -64,9 +64,8 @@ export function NavUser() {
                 >
                   <Avatar
                     name={user?.displayName}
-                    variant='pixel'
+                    variant='beam'
                     colors={[
-                      '#000',
                       '#ffffff',
                       '#000000',
                       '#ffffff',
@@ -92,9 +91,8 @@ export function NavUser() {
                   <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                     <Avatar
                       name={user?.displayName}
-                      variant='pixel'
+                      variant='beam'
                       colors={[
-                        '#000',
                         '#ffffff',
                         '#000000',
                         '#ffffff',
