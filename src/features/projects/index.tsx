@@ -40,6 +40,7 @@ import { FakeProgress } from '../../components/fake-progress'
 import { auth, database } from '../../firebase'
 import { Project } from '../../lib/publicTypes'
 import './Chat.css'
+import Flow from './flow'
 
 export default function Projects() {
   const [search, setSearch] = useState('')
@@ -48,7 +49,6 @@ export default function Projects() {
   const [mobileSelectedProject, setMobileSelectedProject] =
     useState<Project | null>(null)
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
-  const [selectedChat, setSelectedChat] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [dbRef, setDbRef] = useState<DatabaseReference>()
@@ -64,43 +64,41 @@ export default function Projects() {
 
   const navigate = useNavigate()
   const [authentication] = useState(auth)
-  let user: User | null
 
-  authentication.onIdTokenChanged(e => {
-    user = authentication?.currentUser;
-    console.log('id', user);
-  })
 
   useEffect(() => {
-    console.log('effect', user);
+    const unsubscribeAuth = authentication.onAuthStateChanged((user: User | null) => {
+      if (user) {
+        const vs = query(
+          ref(db, 'archs'),
+          orderByChild('customer'),
+          equalTo(user.uid)
+        );
 
-    if (!user) {
-      return
-    }
-    const vs = query(
-      ref(db, 'archs'),
-      orderByChild('customer'),
-      equalTo(user?.uid)
-    )
-    // push(ref(db, 'archs'), {'customer': 'customer', 'project': 'project', 'name': 'name', 'createdAt': 'createdAt'});
-    const unsubscribe = onValue(vs, (snapshot) => {
-      const data = snapshot.val()
-      if (data) {
-        const projects = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }))
-        setFilteredProjects(projects)
+        const unsubscribeDb = onValue(vs, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const projects = Object.keys(data).map((key) => ({
+              id: key,
+              ...data[key],
+            }));
+            setFilteredProjects(projects);
+          }
+        });
+
+        return () => {
+          unsubscribeDb();
+        };
       }
-    })
+    });
 
     return () => {
-      unsubscribe()
-    }
-  }, [db, user])
+      unsubscribeAuth();
+    };
+  }, [authentication, db]);
+
 
   async function selectProject(worker: Project) {
-    setSelectedChat(null)
     setMobileSelectedProject(worker)
     setSelectedProject(worker)
 
@@ -311,7 +309,7 @@ export default function Projects() {
 
                             <div>
                               <span className='col-start-2 row-span-2 font-medium'>
-                                {format(project.createdAt, 'dd/MM/yyyy h:mm a')}
+                                {format(project.createdAt || new Date(), 'dd/MM/yyyy h:mm a')}
                               </span>
                               <span className='col-start-2 row-span-2 row-start-2 line-clamp-2 text-ellipsis text-muted-foreground'>
                                 {project?.name}
@@ -326,7 +324,7 @@ export default function Projects() {
                 </ScrollArea>
               </div>
 
-              {selectedChat ? (
+              {selectedProject ? (
                 <div
                   className={cn(
                     'absolute inset-0 hidden left-full z-50 w-full flex-1 flex-col rounded-md border bg-primary-foreground shadow-sm transition-all duration-200 sm:static sm:z-auto sm:flex',
@@ -397,37 +395,7 @@ export default function Projects() {
                     <div className='flex size-full flex-1'>
                       <div className='project-text-container relative -mr-4 flex flex-1 flex-col overflow-y-hidden'>
                         <div className='project-flex flex h-40 w-full flex-grow flex-col-reverse justify-start gap-4 overflow-y-auto py-2 pb-4 pr-4'>
-                          {waitingMessage && (
-                            <small className='linear-wipe'>typing...</small>
-                          )}
-                          {/* {messages?.map((msg) => {
-                            const text =
-                              msg.messages?.[0]?.content?.[0]?.text?.value
-                            const user = msg.messages[0]?.role
-                            return (
-                              <div
-                                key={msg.objectId}
-                                className={cn(
-                                  'project-box max-w-72 break-words px-3 py-2 shadow-lg',
-                                  user === 'user'
-                                    ? 'self-end rounded-[16px_16px_0_16px] bg-primary/85 text-primary-foreground/75'
-                                    : 'self-start rounded-[16px_16px_16px_0] bg-secondary'
-                                )}
-                              >
-                                <ReactMarkdown remarkPlugins={[gfm]}>
-                                  {cleanUrls(text)}
-                                </ReactMarkdown>
-                                <span
-                                  className={cn(
-                                    'mt-1 block text-xs font-light italic text-muted-foreground',
-                                    user === 'You' && 'text-right'
-                                  )}
-                                >
-                                  {format(msg.expiresAt, 'h:mm a')}
-                                </span>
-                              </div>
-                            )
-                          })} */}
+                          <Flow></Flow>
                         </div>
                       </div>
                     </div>
