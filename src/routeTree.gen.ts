@@ -64,6 +64,9 @@ const AuthenticatedSettingsAppearanceLazyImport = createFileRoute(
 const AuthenticatedSettingsAccountLazyImport = createFileRoute(
   '/_authenticated/settings/account',
 )()
+const AuthenticatedProjectsIdIndexLazyImport = createFileRoute(
+  '/_authenticated/projects/$id/',
+)()
 const AuthenticatedProjectsSettingsWorkerIdRouteLazyImport = createFileRoute(
   '/_authenticated/projects/settings/$workerId',
 )()
@@ -279,6 +282,17 @@ const AuthenticatedSettingsAccountLazyRoute =
     getParentRoute: () => AuthenticatedSettingsRouteLazyRoute,
   } as any).lazy(() =>
     import('./routes/_authenticated/settings/account.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedProjectsIdIndexLazyRoute =
+  AuthenticatedProjectsIdIndexLazyImport.update({
+    id: '/projects/$id/',
+    path: '/projects/$id/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/projects/$id/index.lazy').then(
       (d) => d.Route,
     ),
   )
@@ -506,6 +520,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/projects/$id/': {
+      id: '/_authenticated/projects/$id/'
+      path: '/projects/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof AuthenticatedProjectsIdIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/projects/settings/$workerId/settings': {
       id: '/_authenticated/projects/settings/$workerId/settings'
       path: '/settings'
@@ -588,6 +609,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksIndexLazyRoute: typeof AuthenticatedTasksIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
   AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute: typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren
+  AuthenticatedProjectsIdIndexLazyRoute: typeof AuthenticatedProjectsIdIndexLazyRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -601,6 +623,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
   AuthenticatedProjectsSettingsWorkerIdRouteLazyRoute:
     AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren,
+  AuthenticatedProjectsIdIndexLazyRoute: AuthenticatedProjectsIdIndexLazyRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -631,6 +654,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/projects/settings/$workerId': typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren
+  '/projects/$id': typeof AuthenticatedProjectsIdIndexLazyRoute
   '/projects/settings/$workerId/settings': typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
   '/projects/settings/$workerId/': typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
   '/projects/settings/$workerId/$area': typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
@@ -658,6 +682,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexLazyRoute
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdIndexLazyRoute
   '/projects/settings/$workerId/settings': typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
   '/projects/settings/$workerId': typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
   '/projects/settings/$workerId/$area': typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
@@ -690,6 +715,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexLazyRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexLazyRoute
   '/_authenticated/projects/settings/$workerId': typeof AuthenticatedProjectsSettingsWorkerIdRouteLazyRouteWithChildren
+  '/_authenticated/projects/$id/': typeof AuthenticatedProjectsIdIndexLazyRoute
   '/_authenticated/projects/settings/$workerId/settings': typeof AuthenticatedProjectsSettingsWorkerIdSettingsLazyRoute
   '/_authenticated/projects/settings/$workerId/': typeof AuthenticatedProjectsSettingsWorkerIdIndexLazyRoute
   '/_authenticated/projects/settings/$workerId/$area/': typeof AuthenticatedProjectsSettingsWorkerIdAreaIndexLazyRoute
@@ -722,6 +748,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/users'
     | '/projects/settings/$workerId'
+    | '/projects/$id'
     | '/projects/settings/$workerId/settings'
     | '/projects/settings/$workerId/'
     | '/projects/settings/$workerId/$area'
@@ -748,6 +775,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tasks'
     | '/users'
+    | '/projects/$id'
     | '/projects/settings/$workerId/settings'
     | '/projects/settings/$workerId'
     | '/projects/settings/$workerId/$area'
@@ -778,6 +806,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
     | '/_authenticated/projects/settings/$workerId'
+    | '/_authenticated/projects/$id/'
     | '/_authenticated/projects/settings/$workerId/settings'
     | '/_authenticated/projects/settings/$workerId/'
     | '/_authenticated/projects/settings/$workerId/$area/'
@@ -848,7 +877,8 @@ export const routeTree = rootRoute
         "/_authenticated/projects/",
         "/_authenticated/tasks/",
         "/_authenticated/users/",
-        "/_authenticated/projects/settings/$workerId"
+        "/_authenticated/projects/settings/$workerId",
+        "/_authenticated/projects/$id/"
       ]
     },
     "/(auth)/500": {
@@ -947,6 +977,10 @@ export const routeTree = rootRoute
         "/_authenticated/projects/settings/$workerId/",
         "/_authenticated/projects/settings/$workerId/$area/"
       ]
+    },
+    "/_authenticated/projects/$id/": {
+      "filePath": "_authenticated/projects/$id/index.lazy.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/projects/settings/$workerId/settings": {
       "filePath": "_authenticated/projects/settings/$workerId/settings.lazy.tsx",

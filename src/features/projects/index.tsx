@@ -60,7 +60,7 @@ export default function Projects() {
     customerId: '',
     projectId: '',
   })
-  const [text, setText] = useState('')
+
 
   const navigate = useNavigate()
   const [authentication] = useState(auth)
@@ -79,7 +79,7 @@ export default function Projects() {
           const data = snapshot.val();
           if (data) {
             const projects = Object.keys(data).map((key) => ({
-              id: key,
+              idx: key,
               ...data[key],
             }));
             setFilteredProjects(projects);
@@ -99,10 +99,9 @@ export default function Projects() {
 
 
   async function selectProject(worker: Project) {
-    setMobileSelectedProject(worker)
-    setSelectedProject(worker)
-
-    return selectedProject
+    navigate({
+      to: `/projects/${worker.idx}`,
+    })
   }
 
   function cleanUrls(text: string) {
@@ -216,11 +215,7 @@ export default function Projects() {
                     </div>
                     <div
                       className='cursor-pointer'
-                      onClick={async () => {
-                        const w = await selectProject(app)
-                        console.log(w)
-                        // newChat();
-                      }}
+                      onClick={() => selectProject(app)}
                     >
                       <h2 className='mb-1 font-semibold'>{app.name}</h2>
                       <p className='line-clamp-2 text-gray-500'>{app.id}</p>
@@ -324,7 +319,7 @@ export default function Projects() {
                 </ScrollArea>
               </div>
 
-              {selectedProject ? (
+              {/* {selectedProject ? (
                 <div
                   className={cn(
                     'absolute inset-0 hidden left-full z-50 w-full flex-1 flex-col rounded-md border bg-primary-foreground shadow-sm transition-all duration-200 sm:static sm:z-auto sm:flex',
@@ -477,7 +472,7 @@ export default function Projects() {
                     Select a project to start messaging
                   </p>
                 </div>
-              )}
+              )} */}
             </section>
           )}
         </Main>

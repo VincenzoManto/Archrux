@@ -4,6 +4,7 @@ export interface Project {
     id: string;
     createdAt: Date | number;
     plan: string;
+    idx?: string;
 
 }
 

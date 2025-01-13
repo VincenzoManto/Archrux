@@ -55,6 +55,7 @@ export default function Flow() {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       fitView
+      colorMode="dark"
       attributionPosition="top-right"
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}

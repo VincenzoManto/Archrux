@@ -7,7 +7,6 @@ import { useNavigate } from '@tanstack/react-router'
 import memoize from 'memoize'
 import timezones from 'timezones-list'
 import { cn } from '@/lib/utils'
-import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -28,8 +27,6 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { FakeProgress } from '../../../../components/fake-progress'
-import { ServiceAutomate } from '../../../../lib/ServiceAutomate'
-import { getToken } from '../../../../lib/utils'
 
 const profileFormSchema = z.object({
   workerId: z.string().optional(),
@@ -55,26 +52,12 @@ const profileFormSchema = z.object({
 
 type AgentFormValues = z.infer<typeof profileFormSchema>
 
-let saClient: ServiceAutomate
 
 const timezonesList = timezones.map((t) => ({
   name: t.label.replace('_', ' ').split(' (')[0],
   label: t.label.replace('_', ' '),
 }))
 
-function randomName() {
-  return new Promise((resolve, reject) => {
-    fetch('https://randomuser.me/api/')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        resolve(data.results[0].name)
-      })
-      .catch((error) => {
-        console.error('Error fetching random user:', error)
-      })
-  })
-}
 
 export default function AgentSettingsForm() {
   const [values, setValues] = useState<Partial<AgentFormValues>>({})
@@ -84,53 +67,9 @@ export default function AgentSettingsForm() {
 
   const { workerId } = useParams({ strict: false })
 
-  async function getWorker(workerId: string) {
-    return await saClient.workerGet(workerId)
-  }
-
-  const getWorkerMem = memoize(getWorker)
 
   useEffect(() => {
-    getToken()
-      .then(async (token: string) => {
-        saClient = new ServiceAutomate({
-          token: token,
-          domain: 'test.serviceautomate.com',
-        })
-        if (!workerId) {
-          navigate({
-            to: '/500',
-          })
-          return
-        }
-        if (workerId === 'new') {
-          const name: any = await randomName()
-          const newData = {
-            name: `${name.title} ${name.first} ${name.last}`,
-            timezone: 'Europe/Rome',
-            duties: [],
-          }
-          setWorker(newData)
-          setValues(newData)
-          form.reset(newData)
-          setLoading(false)
-          return
-        }
-        const data = await getWorkerMem(workerId)
-        setWorker(data.request)
-        const values = {
-          ...data,
-          ...data.request,
-        }
-        setValues(values)
-        form.reset(values)
-        setLoading(false)
-      })
-      .catch(() =>
-        navigate({
-          to: '/500',
-        })
-      )
+    
   }, [])
 
   const form = useForm<AgentFormValues>({
@@ -146,28 +85,7 @@ export default function AgentSettingsForm() {
       ...data,
     }
     payload.duties = payload.duties?.map((d: any) => d.value)
-    const api =
-      workerId === 'new'
-        ? saClient.workerCreate(payload)
-        : saClient.workerUpdate(workerId!, payload)
-    console.log(payload)
-    api
-      .then((_: any) => {
-        setLoading(false)
-        toast({
-          title: 'Everything is fine',
-        }).dismiss(3000)
-        navigate({
-          to: '/chats',
-        })
-      })
-      .catch((error: any) => {
-        setLoading(false)
-        console.log(error)
-        toast({
-          title: 'Something went wrong',
-        }).dismiss(3000)
-      })
+    
   }
 
   const { fields, append } = useFieldArray({
