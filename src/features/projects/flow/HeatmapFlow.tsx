@@ -1,11 +1,5 @@
 import { useEffect, useRef } from 'react'
-import {
-  ReactFlow,
-  MiniMap,
-  Controls,
-  Background,
-  Node,
-} from '@xyflow/react'
+import { ReactFlow, MiniMap, Controls, Background, Node } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import SimpleHeat from 'simpleheat'
 import { AnimatedSVGEdge } from './AnimatedEdge'
@@ -33,25 +27,26 @@ const edgeTypes: any = {
 const nodeClassName = (node: Node) => node.type
 
 export default function HeatmapFlow({
-    onNodesChange,
-    onEdgesChange,
-    nodes,
-    edges,
-    onConnect,
-    }: {
-    onNodesChange: any
-    onEdgesChange: any
-    nodes: Node[]
-    edges: any[]
-    onConnect: any
+  onNodesChange,
+  onEdgesChange,
+  nodes,
+  edges,
+  onConnect,
+  playState,
+}: {
+  onNodesChange: any
+  onEdgesChange: any
+  nodes: Node[]
+  edges: any[]
+  onConnect: any
+  playState: boolean
 }) {
-
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const heat = useRef<any>(null)
   const points = useRef<{ x: number; y: number; v: number }[]>([])
 
   useEffect(() => {
-    if (canvasRef.current) {
+    if (canvasRef.current && playState) {
       const canvas = canvasRef.current
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight
@@ -71,8 +66,10 @@ export default function HeatmapFlow({
             .filter((e) => e)
         )
       }, 100)
+    } else {
+        canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
     }
-  }, [])
+  }, [playState])
 
   const updateHeatmap = (x: number, y: number) => {
     if (heat.current && canvasRef.current) {
@@ -82,23 +79,25 @@ export default function HeatmapFlow({
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      for (const e of document.getElementsByClassName('animated-edge')) {
-        const circle = e
-        if (circle && canvasRef.current) {
-          const { left, top } = canvasRef.current.getBoundingClientRect()
-          const { x, y } = circle.getBoundingClientRect()
-          const adjustedX = x - left
-          const adjustedY = y - top
+    if (playState) {
+      const interval = setInterval(() => {
+        for (const e of document.getElementsByClassName('animated-edge')) {
+          const circle = e
+          if (circle && canvasRef.current) {
+            const { left, top } = canvasRef.current.getBoundingClientRect()
+            const { x, y } = circle.getBoundingClientRect()
+            const adjustedX = x - left
+            const adjustedY = y - top
 
-          updateHeatmap(adjustedX, adjustedY)
+            updateHeatmap(adjustedX, adjustedY)
+          }
         }
-      }
-      heat.current.draw(0.05)
-    }, 100)
+        heat.current.draw(0.05)
+      }, 100)
 
-    return () => clearInterval(interval)
-  }, [])
+      return () => clearInterval(interval)
+    }
+  }, [playState])
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>

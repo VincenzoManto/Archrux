@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import {
   addEdge,
   useNodesState,
@@ -9,7 +9,7 @@ import './flow.css'
 import { nodes as initialNodes, edges as initialEdges } from './nodes'
 import HeatmapFlow from './HeatmapFlow'
 
-export default function Flow() {
+export default function Flow({playState}: {playState: boolean}) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const onConnect = useCallback(
@@ -24,6 +24,7 @@ export default function Flow() {
       onEdgesChange={onEdgesChange}
       nodes={nodes}
       edges={edges}
+      playState={playState}
       onConnect={onConnect}>
     </HeatmapFlow>
   )

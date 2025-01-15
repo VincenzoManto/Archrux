@@ -1,36 +1,24 @@
 import { useEffect, useState } from 'react'
-import { Fragment } from 'react/jsx-runtime'
-import { format } from 'date-fns'
-import { Message } from 'react-hook-form'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import {
   IconArrowLeft,
   IconDotsVertical,
   IconEdit,
-  IconMessagePlus,
-  IconMessages,
   IconPaperclip,
   IconPhotoPlus,
+  IconPlayerPlay,
+  IconPlayerStop,
   IconPlus,
-  IconSearch,
   IconSend,
-  IconTrash,
 } from '@tabler/icons-react'
 import Avatar from 'boring-avatars'
 import { User } from 'firebase/auth'
 import {
-  DatabaseReference,
-  equalTo,
   onValue,
-  orderByChild,
-  push,
-  query,
   ref,
 } from 'firebase/database'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
@@ -50,6 +38,7 @@ export function Details() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [authentication] = useState(auth)
   const [db] = useState(database)
+  const [play, setPlay] = useState(false)
 
   useEffect(() => {
     const unsubscribeAuth = authentication.onAuthStateChanged(
@@ -60,11 +49,7 @@ export function Details() {
           const unsubscribeDb = onValue(vs, (snapshot) => {
             const data = snapshot.val()
             if (data) {
-              const projects = Object.keys(data).map((key) => ({
-                id: key,
-                ...data[key],
-              }))
-              setSelectedProject(projects[0])
+              setSelectedProject(data)
             }
           })
 
@@ -123,6 +108,16 @@ export function Details() {
         </div>
 
         <div className='-mr-1 flex items-center gap-1 lg:gap-2'>
+        <Button
+            onClick={() =>
+              setPlay(!play)
+            }
+            size='icon'
+            variant='ghost'
+            className='hidden size-8 rounded-full sm:inline-flex lg:size-10'
+          >
+            { play ? <IconPlayerStop size={22} className='stroke-muted-foreground' /> : <IconPlayerPlay size={22} className='stroke-muted-foreground' /> }
+          </Button>
           <Button
             onClick={() =>
               navigate({
@@ -149,7 +144,7 @@ export function Details() {
         <div className='flex size-full flex-1'>
           <div className='project-text-container relative -mr-4 flex flex-1 flex-col overflow-y-hidden'>
             <div className='project-flex flex h-40 w-full flex-grow flex-col-reverse justify-start gap-4 overflow-y-auto py-2 pb-4 pr-4'>
-              <Flow></Flow>
+              <Flow playState={play}></Flow>
             </div>
           </div>
         </div>
