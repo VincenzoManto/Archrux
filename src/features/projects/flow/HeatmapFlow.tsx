@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ReactFlow,
   MiniMap,
   Controls,
   Background,
   Node,
-  ReactFlowInstance,
   useReactFlow,
   ReactFlowProvider,
 } from '@xyflow/react'
@@ -19,6 +18,8 @@ import ResizerNode from './ResizerNode'
 import TextInputNode from './TextInputNode'
 import ToolbarNode from './ToolbarNode'
 import './flow.css'
+import { Library } from 'lucide-react'
+import { LibraryPanel } from './LibraryPanel'
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -63,6 +64,7 @@ export default function HeatmapFlowProvider(props: any) {
   const heat = useRef<any>(null)
   const points = useRef<{ x: number; y: number; v: number }[]>([])
   const { getZoom } = useReactFlow()
+  const [internalNodes, setInternalNodes] = useState<Node[]>(nodes)
 
   useEffect(() => {
     if (canvasRef.current && playState) {
@@ -125,34 +127,61 @@ export default function HeatmapFlowProvider(props: any) {
     }
   }, [playState])
 
+  const onDrop = useCallback(
+    (event) => {
+      // event.preventDefault();
+      const reactFlowBounds = event.target.getBoundingClientRect();
+      const data = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+      const position = {
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      };
+      const newNode = {
+        id: `${data.id}-${Date.now()}`,
+        type: data.type,
+        position,
+        data: { label: data.label },
+      };
+      setInternalNodes((nds) => nds.concat(newNode));
+    },
+    [setInternalNodes]
+  );
+
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      />
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-        colorMode='dark'
-        attributionPosition='top-right'
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-      >
-        <MiniMap zoomable pannable nodeClassName={nodeClassName} />
-        <Controls />
-        <Background />
-      </ReactFlow>
+    <div className="flex">
+        <aside>
+            <LibraryPanel
+                onAddNode={(node) => setInternalNodes((nds) => nds.concat(node))}
+            />
+        </aside>
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <canvas
+            ref={canvasRef}
+            style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            }}
+        />
+        <ReactFlow
+            nodes={internalNodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+            colorMode='dark'
+            attributionPosition='top-right'
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+        >
+            <MiniMap zoomable pannable nodeClassName={nodeClassName} />
+            <Controls />
+            <Background />
+        </ReactFlow>
+        </div>
     </div>
   )
 }
