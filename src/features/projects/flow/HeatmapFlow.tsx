@@ -63,7 +63,7 @@ export default function HeatmapFlowProvider(props: any) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const heat = useRef<any>(null)
   const points = useRef<{ x: number; y: number; v: number }[]>([])
-  const { getZoom } = useReactFlow()
+  const { getZoom, screenToFlowPosition  } = useReactFlow()
   const [internalNodes, setInternalNodes] = useState<Node[]>(nodes)
 
   useEffect(() => {
@@ -130,12 +130,11 @@ export default function HeatmapFlowProvider(props: any) {
   const onDrop = useCallback(
     (event) => {
       // event.preventDefault();
-      const reactFlowBounds = event.target.getBoundingClientRect();
       const data = JSON.parse(event.dataTransfer.getData('application/reactflow'));
-      const position = {
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      };
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
       const newNode = {
         id: `${data.id}-${Date.now()}`,
         type: data.type,
@@ -146,6 +145,11 @@ export default function HeatmapFlowProvider(props: any) {
     },
     [setInternalNodes]
   );
+
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
 
   return (
     <div className="flex">
@@ -171,6 +175,8 @@ export default function HeatmapFlowProvider(props: any) {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
             fitView
             colorMode='dark'
             attributionPosition='top-right'
