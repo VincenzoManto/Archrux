@@ -1,5 +1,14 @@
-import { useEffect, useRef } from 'react'
-import { ReactFlow, MiniMap, Controls, Background, Node } from '@xyflow/react'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  Node,
+  ReactFlowInstance,
+  useReactFlow,
+  ReactFlowProvider,
+} from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import SimpleHeat from 'simpleheat'
 import { AnimatedSVGEdge } from './AnimatedEdge'
@@ -26,7 +35,16 @@ const edgeTypes: any = {
 
 const nodeClassName = (node: Node) => node.type
 
-export default function HeatmapFlow({
+// wrapping with ReactFlowProvider is done outside of the component
+export default function HeatmapFlowProvider(props: any) {
+    return (
+      <ReactFlowProvider>
+        <HeatmapFlow {...props} />
+      </ReactFlowProvider>
+    );
+  }
+
+ function HeatmapFlow({
   onNodesChange,
   onEdgesChange,
   nodes,
@@ -44,6 +62,7 @@ export default function HeatmapFlow({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const heat = useRef<any>(null)
   const points = useRef<{ x: number; y: number; v: number }[]>([])
+  const { getZoom } = useReactFlow()
 
   useEffect(() => {
     if (canvasRef.current && playState) {
@@ -67,7 +86,9 @@ export default function HeatmapFlow({
         )
       }, 100)
     } else {
-        canvasRef.current?.getContext('2d')?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+      canvasRef.current
+        ?.getContext('2d')
+        ?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
     }
   }, [playState])
 
@@ -91,6 +112,11 @@ export default function HeatmapFlow({
 
             updateHeatmap(adjustedX, adjustedY)
           }
+        }
+
+        const zoom = getZoom() * 2 || 1;
+        if (zoom) {
+          heat.current.radius(10 * zoom, 20 * zoom)
         }
         heat.current.draw(0.05)
       }, 100)
@@ -122,7 +148,6 @@ export default function HeatmapFlow({
         attributionPosition='top-right'
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        style={{ backgroundColor: '#F7F9FB' }}
       >
         <MiniMap zoomable pannable nodeClassName={nodeClassName} />
         <Controls />

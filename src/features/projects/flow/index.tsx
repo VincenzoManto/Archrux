@@ -7,7 +7,7 @@ import {
 import '@xyflow/react/dist/style.css'
 import './flow.css'
 import { nodes as initialNodes, edges as initialEdges } from './nodes'
-import HeatmapFlow from './HeatmapFlow'
+import HeatmapFlowProvider from './HeatmapFlow'
 
 export default function Flow({playState}: {playState: boolean}) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
@@ -19,13 +19,13 @@ export default function Flow({playState}: {playState: boolean}) {
 
 
   return (
-    <HeatmapFlow
+    <HeatmapFlowProvider
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       nodes={nodes}
       edges={edges}
       playState={playState}
       onConnect={onConnect}>
-    </HeatmapFlow>
+    </HeatmapFlowProvider>
   )
 }
