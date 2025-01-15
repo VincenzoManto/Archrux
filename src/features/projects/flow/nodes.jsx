@@ -139,6 +139,7 @@ export const edges = [
     id: 'e1-3',
     source: '1-1',
     target: '1-3',
+    type: 'animatedSvg',
     animated: true,
     label: 'animated edge',
   },
