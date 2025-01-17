@@ -2,7 +2,7 @@
  
 .react-flow {
     /* Custom Variables */
-    --xy-theme-selected: #F57DBD;
+    --xy-theme-selected: #00d86f;
     --xy-theme-hover: #C5C5C5;
     --xy-theme-edge-hover: black;
     --xy-theme-color-focus: #E8E8E8;
@@ -257,7 +257,7 @@ input[type='number']::-webkit-inner-spin-button {
 /* Custom Handles */
  
 .react-flow__handle.custom-handle {
-  background-color: var(--xy-handle-border-color-default);
+  background-color: var(--xy-theme-selected);
   border-radius: 1px;
   width: 8px;
   height: 4px;
@@ -270,7 +270,7 @@ input[type='number']::-webkit-inner-spin-button {
 .react-flow__handle.custom-handle.connectionindicator:focus,
 .react-flow__handle.custom-handle.connectingfrom,
 .react-flow__handle.custom-handle.connectingto {
-  background-color: var(--xy-theme-edge-hover);
+  background-color: #00a85d;
 }
  
 .react-flow__handle-bottom.custom-handle {
@@ -284,9 +284,15 @@ input[type='number']::-webkit-inner-spin-button {
 }
  
 .react-flow__handle-left.custom-handle {
-  height: 8px;
+  height: 50px;
   width: 4px;
   left: -3px;
+}
+
+.react-flow__handle-right.custom-handle {
+  height: 50px;
+  width: 4px;
+  right: -3px;
 }
  
 /* Minimap */

@@ -1,5 +1,6 @@
 import React from 'react';
 import { MarkerType } from '@xyflow/react';
+import { NodeType } from '../../../lib/publicTypes';
  
 export const nodes = [
   {
@@ -175,5 +176,42 @@ export const edges = [
     sourceHandle: 'b',
     target: '3-1',
     type: 'button',
+  },
+];
+
+
+
+export const NODE_CATALOG: NodeType[] = [
+  {
+    id: 'javascript',
+    label: 'JavaScript'
+  },
+  {
+    id: 'annotation',
+    label: 'Annotation'
+  },
+  {
+    id: 'text',
+    label: 'Text'
+  },
+  {
+    id: 'exampleData',
+    label: 'Example Data'
+  },
+  {
+    id: 'filter',
+    label: 'Filter'
+  },
+  {
+    id: 'sort',
+    label: 'Sort'
+  },
+  {
+    id: 'scatter',
+    label: 'Scatterplot'
+  },
+  {
+    id: 'stats',
+    label: 'Stats'
   },
 ];
