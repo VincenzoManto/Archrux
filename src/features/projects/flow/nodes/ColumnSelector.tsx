@@ -25,12 +25,42 @@ export function ColumnSelector({
 
   return (
     <>
-      <Select onValueChange={(e) => setSelectedColumn(e)}>
+      <Select onValueChange={(e) => setSelectedColumn(e)} value={selectedColumn}>
           <SelectTrigger>
             <SelectValue placeholder='Column' />
           </SelectTrigger>
         <SelectContent>
           {columns.map((col) => (
+            <SelectItem key={col} value={col}>
+              {col}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </>
+  )
+}
+
+export interface OperatorSelectorProps {
+  selectedOperator: string
+  setSelectedOperator: (operator: string) => void
+}
+
+export function OperatorSelector({
+  selectedOperator,
+  setSelectedOperator,
+}: OperatorSelectorProps) {
+  const [operators] = useState<string[]>(['>', '<', '==', '!=', '>=', '<=', 'contains', 'startsWith', 'endsWith', 'regex'])
+
+
+  return (
+    <>
+      <Select onValueChange={(e) => setSelectedOperator(e)} value={selectedOperator}>
+          <SelectTrigger>
+            <SelectValue placeholder='Operator' />
+          </SelectTrigger>
+        <SelectContent>
+          {operators.map((col) => (
             <SelectItem key={col} value={col}>
               {col}
             </SelectItem>

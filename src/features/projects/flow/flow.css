@@ -253,7 +253,12 @@ input[type='number']::-webkit-inner-spin-button {
 .react-flow__edge-textbg {
   fill: #f7f9fb;
 }
- 
+
+.drag-handle__custom {
+  font-size: large;
+  font-weight: bold;
+}
+
 /* Custom Handles */
  
 .react-flow__handle.custom-handle {

@@ -29,12 +29,18 @@ import { SidebarFlow } from './SideBarFlow';
 import { NodeType } from '../../../lib/publicTypes';
 import FilterNode from './nodes/FilterNode';
 import TextNode from './nodes/TextNode';
+import ExampleDataNode from './nodes/ExampleDataNode';
+import ScatterNode from './nodes/ScatterNode';
+import BarNode from './nodes/BarNode';
 
 const nodeTypes = {
   annotation: AnnotationNode,
   tools: ToolbarNode,
   text: TextNode,
+  exampleData: ExampleDataNode,
   filter: FilterNode,
+  scatter: ScatterNode,
+  bar: BarNode,
 /*   sort: SortNode,
   javascript: JavascriptNode,
   merge: MergeNode,
@@ -87,7 +93,8 @@ export default function Flow() {
   };
 
   return (
-    <div className='flex'><SidebarFlow
+    <><SidebarFlow
+    className="absolute top-0 left-0 h-100 w-auto"
     onDragStart={(event: React.DragEvent, nodeType) => {
       event.dataTransfer.setData('nodeType', JSON.stringify(nodeType));
     }}
@@ -112,7 +119,7 @@ export default function Flow() {
       <Controls />
     <Background  />
     </ReactFlow>
-    </div>
+    </>
   );
 };
  ;

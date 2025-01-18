@@ -8,6 +8,10 @@ I've been creating dashboard UIs at work and for my personal projects. I always 
 
 > This is not a starter project (template) though. I'll probably make one in the future.
 
+https://founderpal.ai/idea-validator?key=EEWZI0GXYE
+
+Nodecrux
+
 ## Features
 
 - Light/dark mode

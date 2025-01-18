@@ -211,6 +211,10 @@ export const NODE_CATALOG: NodeType[] = [
     label: 'Scatterplot'
   },
   {
+    id: 'bar',
+    label: 'Bar Chart'
+  },
+  {
     id: 'stats',
     label: 'Stats'
   },
