@@ -41,6 +41,62 @@ export function ColumnSelector({
   )
 }
 
+export interface MultiColumnSelectorProps {
+  data: { input: Dataset | null }
+  selectedColumns: string[]
+  setSelectedColumns: (columns: string[]) => void
+}
+
+export function MultiColumnSelector({
+  data,
+  selectedColumns,
+  setSelectedColumns,
+}: MultiColumnSelectorProps) {
+  const [columns, setColumns] = useState<string[]>([])
+
+  useEffect(() => {
+    if (data.input) {
+      setColumns(Object.keys(data.input[0] || {}))
+    }
+  }, [data.input])
+
+  const handleColumnChange = (index: number, value: string) => {
+    const newSelectedColumns = [...selectedColumns]
+    newSelectedColumns[index] = value
+    setSelectedColumns(newSelectedColumns)
+  }
+
+  const addColumnSelector = () => {
+    setSelectedColumns([...selectedColumns, ''])
+  }
+
+  return (
+    <>
+      {selectedColumns.map((col, index) => (
+        <Select
+          key={index}
+          onValueChange={(e) => handleColumnChange(index, e)}
+          value={col}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder='Column' />
+          </SelectTrigger>
+          <SelectContent>
+            {columns.map((column) => (
+              <SelectItem key={column} value={column}>
+                {column}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ))}
+      {selectedColumns.length < columns.length && (
+        <button onClick={addColumnSelector}>Add Column</button>
+      )}
+    </>
+  )
+}
+
 export interface OperatorSelectorProps {
   selectedOperator: string
   setSelectedOperator: (operator: string) => void

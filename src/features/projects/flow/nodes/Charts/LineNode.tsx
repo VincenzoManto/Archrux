@@ -9,12 +9,11 @@ import {
   useNodesData,
 } from '@xyflow/react'
 import * as echarts from 'echarts'
-import { Separator } from '../../../../components/ui/separator'
-import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '../../../../lib/publicTypes'
-import { ColumnSelector } from './ColumnSelector'
-import { Label } from '../../../../components/ui/label'
-
-function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
+import { Separator } from '@/components/ui/separator'
+import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '@/lib/publicTypes'
+import { ColumnSelector } from '../ColumnSelector'
+import { Label } from '@/components/ui/label'
+function LineNode(props: NodeProps<Node<VisualizationNodeProps>>) {
   const connections = useHandleConnections({
     type: 'target',
   })
@@ -39,14 +38,14 @@ function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     }
     if (!input || !xColumn || !yColumn) return
     const chart = echarts.init(chartRef.current!)
-    const xData = input.map((row: any) => row[xColumn] as string)
+    const xData = input.map((row: any) => row[xColumn] as number)
     const yData = input.map((row: any) => row[yColumn] as number)
 
     chart.setOption({
       color: ['#00d86f'],
-      xAxis: { type: 'category', name: xColumn, data: xData },
+      xAxis: { type: 'category', name: xColumn },
       yAxis: { type: 'value', name: yColumn },
-      series: [{ data: yData, type: 'bar' }],
+      series: [{ data: xData.map((x: number, i: number) => [x, yData[i]]), type: 'line' }],
     })
 
     return () => chart.dispose()
@@ -56,7 +55,7 @@ function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     <div>
       <div className='drag-handle__custom border-b py-2 text-left mb-2'>
         <IconGripVertical size={12} className='inline' />
-        Bar
+        Line
         <Separator className='shadow' />
       </div>
       <Label>X-Axis</Label>
@@ -80,4 +79,5 @@ function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     </div>
   )
 }
-export default memo(BarNode)
+
+export default memo(LineNode)

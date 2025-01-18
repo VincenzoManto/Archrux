@@ -1,6 +1,7 @@
 import React from 'react';
 import { MarkerType } from '@xyflow/react';
 import { NodeType } from '../../../lib/publicTypes';
+import { IconAnalyze, IconArrowMerge, IconArrowsJoin, IconArrowsSplit, IconBrandJavascript, IconCalendarDue, IconChartBar, IconChartHistogram, IconChartLine, IconChartPie, IconChartRadar, IconChartScatter, IconCubeSpark, IconCubeUnfolded, IconCursorText, IconDatabaseLeak, IconFilterBolt, IconMatrix, IconSortAscending, IconTable, IconTextCaption, IconWebhook } from '@tabler/icons-react';
  
 export const nodes = [
   {
@@ -184,38 +185,108 @@ export const edges = [
 export const NODE_CATALOG: NodeType[] = [
   {
     id: 'javascript',
-    label: 'JavaScript'
+    label: 'JavaScript',
+    icon: IconBrandJavascript
   },
   {
     id: 'annotation',
-    label: 'Annotation'
+    label: 'Annotation',
+    icon: IconTextCaption
   },
   {
     id: 'text',
-    label: 'Text'
+    label: 'Text',
+    icon: IconCursorText
   },
   {
     id: 'exampleData',
-    label: 'Example Data'
+    label: 'Example Data',
+    icon: IconDatabaseLeak
   },
   {
     id: 'filter',
-    label: 'Filter'
+    label: 'Filter',
+    icon: IconFilterBolt
   },
   {
     id: 'sort',
-    label: 'Sort'
+    label: 'Sort',
+    icon: IconSortAscending,
   },
   {
     id: 'scatter',
-    label: 'Scatterplot'
+    label: 'Scatter Chart',
+    icon: IconChartScatter,
   },
   {
     id: 'bar',
-    label: 'Bar Chart'
+    label: 'Bar Chart',
+    icon : IconChartBar
+  },
+  {
+    id: 'table',
+    label: 'Table',
+    icon: IconTable
+
+  },
+  {
+    id: 'Pie Chart',
+    label: 'Pie Chart',
+    icon: IconChartPie
+  },
+  {
+    id: 'Histogram',
+    label: 'Histogram',
+    icon: IconChartHistogram
+  },
+  {
+    id: 'line',
+    label: 'Line Chart',
+    icon: IconChartLine
+  },
+  {
+    id: 'radar',
+    label: 'Radar Chart',
+    icon: IconChartRadar
+  },
+  {
+    id: 'merge',
+    label: 'Merge',
+    icon: IconArrowMerge
+  },
+  {
+    id: 'split',
+    label: 'Split',
+    icon: IconArrowsSplit
+  },
+  {
+    id: 'join',
+    label: 'Join',
+    icon: IconArrowsJoin
+  },
+  {
+    id: 'transpose',
+    label: 'Transpose',
+    icon: IconMatrix
+  },
+  {
+    id: 'pivot',
+    label: 'Pivot',
+    icon: IconCubeUnfolded
+  },
+  {
+    id: 'Heatmap',
+    label: 'Heatmap Calendar',
+    icon: IconCalendarDue
+  },
+  {
+    id: 'URL',
+    label: 'URL',
+    icon: IconWebhook
   },
   {
     id: 'stats',
-    label: 'Stats'
+    label: 'Stats',
+    icon: IconAnalyze
   },
 ];

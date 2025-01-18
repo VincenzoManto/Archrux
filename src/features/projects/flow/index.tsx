@@ -30,8 +30,8 @@ import { NodeType } from '../../../lib/publicTypes';
 import FilterNode from './nodes/FilterNode';
 import TextNode from './nodes/TextNode';
 import ExampleDataNode from './nodes/ExampleDataNode';
-import ScatterNode from './nodes/ScatterNode';
-import BarNode from './nodes/BarNode';
+import ScatterNode from './nodes/Charts/ScatterNode';
+import BarNode from './nodes/Charts/BarNode';
 
 const nodeTypes = {
   annotation: AnnotationNode,

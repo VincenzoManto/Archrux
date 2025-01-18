@@ -1,4 +1,3 @@
-import { Node } from "@xyflow/react"
 
 export interface Project {
   name: string
@@ -48,4 +47,5 @@ export type NodeOutput = Dataset | any
 export type NodeType = {
   id: string;
   label: string;
+  icon: any;
 };

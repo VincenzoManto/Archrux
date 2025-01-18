@@ -1,3 +1,4 @@
+import { Badge } from "../../../components/ui/badge";
 import { NodeType } from "../../../lib/publicTypes";
 import { NODE_CATALOG } from "./nodes";
 
@@ -12,20 +13,16 @@ export const SidebarFlow: React.FC<{ onDragStart: (event: any, nodeType: NodeTyp
       <div style={{ padding: 10, zIndex: 9999 }} className={className}>
         <h3>Nodes</h3>
         {NODE_CATALOG.map((node) => (
-          <div
+          <Badge
             key={node.id}
             draggable
+            variant='secondary'
+            className='block p-2 m-2 rounded cursor-grab'
             onDragStart={(event) => onDragStart(event, node)}
-            style={{
-              padding: 10,
-              margin: 5,
-              color: 'white',
-              borderRadius: 5,
-              cursor: 'grab',
-            }}
           >
+            {<node.icon className='inline mr-2' size={16} />}
             {node.label}
-          </div>
+          </Badge>
         ))}
       </div>
     );

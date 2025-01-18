@@ -9,23 +9,21 @@ import {
   useNodesData,
 } from '@xyflow/react'
 import * as echarts from 'echarts'
-import { Separator } from '../../../../components/ui/separator'
-import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '../../../../lib/publicTypes'
-import { ColumnSelector } from './ColumnSelector'
-import { set } from 'date-fns'
-import { Label } from '../../../../components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '@/lib/publicTypes'
+import { ColumnSelector } from '../ColumnSelector'
+import { Label } from '@/components/ui/label'
 
-function ScatterNode(props: NodeProps<Node<VisualizationNodeProps>>) {
+function PieNode(props: NodeProps<Node<VisualizationNodeProps>>) {
   const connections = useHandleConnections({
     type: 'target',
   })
   const nodesData = useNodesData<Node<DataNodeProps | TransformationNodeProps>>(
     connections.map((connection) => connection.source)
   )
-  // const textNodes = nodesData.filter(isTextNode);
 
-  const [xColumn, setXColumn] = useState<string>('')
-  const [yColumn, setYColumn] = useState<string>('')
+  const [categoryColumn, setCategoryColumn] = useState<string>('')
+  const [valueColumn, setValueColumn] = useState<string>('')
   const chartRef = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState<Dataset>([])
 
@@ -34,44 +32,49 @@ function ScatterNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     const input = nodesData[0].data?.output;
     if (input) {
       setInput(input)
-      if (!xColumn && !yColumn) {
-        setXColumn(Object.keys(input[0])[0])
-        setYColumn(Object.keys(input[0])[1])
+      if (!categoryColumn && !valueColumn) {
+        setCategoryColumn(Object.keys(input[0])[0])
+        setValueColumn(Object.keys(input[0])[1])
       }
     }
-    if (!input || !xColumn || !yColumn) return
+    if (!input || !categoryColumn || !valueColumn) return
     const chart = echarts.init(chartRef.current!)
-    const xData = input.map((row: any) => row[xColumn] as number)
-    const yData = input.map((row: any) => row[yColumn] as number)
+    const data = input.map((row: any) => ({
+      name: row[categoryColumn],
+      value: row[valueColumn],
+    }))
 
     chart.setOption({
-      color: ['#00d86f'],
-      xAxis: { type: 'value', name: xColumn },
-      yAxis: { type: 'value', name: yColumn },
-      series: [{ data: xData.map((x: number, i: number) => [x, yData[i]]), type: 'scatter' }],
+      color: ['#00d86f', '#ff6f00', '#ff006f', '#6f00ff', '#006fff'],
+      series: [
+        {
+          type: 'pie',
+          data,
+        },
+      ],
     })
 
     return () => chart.dispose()
-  }, [nodesData, xColumn, yColumn])
+  }, [nodesData, categoryColumn, valueColumn])
 
   return (
     <div>
       <div className='drag-handle__custom border-b py-2 text-left mb-2'>
         <IconGripVertical size={12} className='inline' />
-        Scatter
+        Pie
         <Separator className='shadow' />
       </div>
-      <Label>X-Axis</Label>
+      <Label>Category</Label>
       <ColumnSelector
         data={{ input: input }}
-        selectedColumn={xColumn}
-        setSelectedColumn={setXColumn}
+        selectedColumn={categoryColumn}
+        setSelectedColumn={setCategoryColumn}
       />
-      <Label>Y-Axis</Label>
+      <Label>Value</Label>
       <ColumnSelector
         data={{ input: input }}
-        selectedColumn={yColumn}
-        setSelectedColumn={setYColumn}
+        selectedColumn={valueColumn}
+        setSelectedColumn={setValueColumn}
       />
       <div ref={chartRef} style={{ width: 300, height: 300 }}></div>
       <Handle
@@ -82,4 +85,5 @@ function ScatterNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     </div>
   )
 }
-export default memo(ScatterNode)
+
+export default memo(PieNode)
