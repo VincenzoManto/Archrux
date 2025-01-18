@@ -1,7 +1,7 @@
 import React from 'react';
 import { MarkerType } from '@xyflow/react';
 import { NodeType } from '../../../lib/publicTypes';
-import { IconAnalyze, IconArrowMerge, IconArrowsJoin, IconArrowsSplit, IconBrandJavascript, IconCalendarDue, IconChartBar, IconChartHistogram, IconChartLine, IconChartPie, IconChartRadar, IconChartScatter, IconCubeSpark, IconCubeUnfolded, IconCursorText, IconDatabaseLeak, IconFilterBolt, IconMatrix, IconSortAscending, IconTable, IconTextCaption, IconWebhook } from '@tabler/icons-react';
+import { IconAnalyze, IconArrowMerge, IconArrowsJoin, IconArrowsSplit, IconBrandJavascript, IconCalendarDue, IconChartBar, IconChartHistogram, IconChartLine, IconChartPie, IconChartRadar, IconChartScatter, IconCubeSpark, IconCubeUnfolded, IconCursorText, IconDatabaseLeak, IconFilterBolt, IconMatrix, IconSortAscending, IconTable, IconTestPipe, IconTextCaption, IconWebhook } from '@tabler/icons-react';
  
 export const nodes = [
   {
@@ -289,4 +289,9 @@ export const NODE_CATALOG: NodeType[] = [
     label: 'Stats',
     icon: IconAnalyze
   },
+  {
+    id: 'ttest',
+    label: 'T-Test',
+    icon: IconTestPipe
+  }
 ];

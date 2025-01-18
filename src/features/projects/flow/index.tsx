@@ -27,11 +27,20 @@ import ToolbarNode from './ToolbarNode';
 import './flow.css'; 
 import { SidebarFlow } from './SideBarFlow';
 import { NodeType } from '../../../lib/publicTypes';
-import FilterNode from './nodes/FilterNode';
+import FilterNode from './nodes/Transform/FilterNode';
 import TextNode from './nodes/TextNode';
 import ExampleDataNode from './nodes/ExampleDataNode';
 import ScatterNode from './nodes/Charts/ScatterNode';
 import BarNode from './nodes/Charts/BarNode';
+import RadarNode from './nodes/Charts/RadarNode';
+import HistogramNode from './nodes/Charts/HistogramNode';
+import PieNode from './nodes/Charts/PieNode';
+import LineNode from './nodes/Charts/LineNode';
+import TableNode from './nodes/Charts/TableNode';
+import SortNode from './nodes/Transform/SortNode';
+import GroupByNode from './nodes/Transform/GroupByNode';
+import StatsNode from './nodes/Charts/StatsNode';
+import TTestNode from './nodes/Charts/TTestNode';
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -41,6 +50,15 @@ const nodeTypes = {
   filter: FilterNode,
   scatter: ScatterNode,
   bar: BarNode,
+  radar: RadarNode,
+  histogram: HistogramNode,
+  pie: PieNode,
+  line: LineNode,
+  table: TableNode,
+  sort: SortNode,
+  group: GroupByNode,
+  stats: StatsNode,
+  ttest: TTestNode,
 /*   sort: SortNode,
   javascript: JavascriptNode,
   merge: MergeNode,

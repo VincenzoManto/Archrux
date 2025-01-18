@@ -1,11 +1,11 @@
 import { memo, useEffect, useState } from 'react'
 import { Handle, Node, NodeProps, Position, useHandleConnections, useNodesData, useReactFlow } from '@xyflow/react'
-import { DataNodeProps, Dataset, TransformationNodeProps } from '../../../../lib/publicTypes'
-import { ColumnSelector, OperatorSelector } from './ColumnSelector'
-import { Label } from '../../../../components/ui/label'
+import { DataNodeProps, Dataset, TransformationNodeProps } from '@/lib/publicTypes'
+import { ColumnSelector, OperatorSelector } from '../ColumnSelector'
+import { Label } from '@/components/ui/label'
 import { IconGripVertical } from '@tabler/icons-react'
 import { Separator } from '@radix-ui/react-separator'
-import { Input } from '../../../../components/ui/input'
+import { Input } from '@/components/ui/input'
 
 function FilterNode({
   id,

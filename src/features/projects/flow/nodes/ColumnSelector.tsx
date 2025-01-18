@@ -126,3 +126,33 @@ export function OperatorSelector({
     </>
   )
 }
+
+
+export interface OrderSelectorProps {
+  selectedOrder: 'asc' | 'desc'
+  setSelectedOrder: (order: 'asc' | 'desc') => void
+}
+
+export function OrderSelector({
+  selectedOrder,
+  setSelectedOrder,
+}: OrderSelectorProps) {
+  const [orders] = useState<string[]>(['asc', 'desc'])
+
+  return (
+    <>
+      <Select onValueChange={(e) => setSelectedOrder(e as 'asc' | 'desc')} value={selectedOrder}>
+        <SelectTrigger>
+          <SelectValue placeholder='Order' />
+        </SelectTrigger>
+        <SelectContent>
+          {orders.map((order) => (
+            <SelectItem key={order} value={order}>
+              {order}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </>
+  )
+}
