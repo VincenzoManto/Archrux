@@ -18,12 +18,12 @@ import {
   nodes as initialNodes,
   edges as initialEdges,
 } from './nodes';
-import AnnotationNode from './AnnotationNode';
-import ButtonEdge from './ButtonEdge';
-import CircleNode from './CircleNode';
-import ResizerNode from './ResizerNode';
-import TextInputNode from './TextInputNode';
-import ToolbarNode from './ToolbarNode';
+import AnnotationNode from './nodes/Basic/AnnotationNode';
+import ButtonEdge from './nodes/Basic/ButtonEdge';
+import CircleNode from './nodes/Basic/CircleNode';
+import ResizerNode from './nodes/Basic/ResizerNode';
+import TextInputNode from './nodes/Basic/TextInputNode';
+import ToolbarNode from './nodes/Basic/ToolbarNode';
 import './flow.css'; 
 import { SidebarFlow } from './SideBarFlow';
 import { NodeType } from '../../../lib/publicTypes';
@@ -59,12 +59,6 @@ const nodeTypes = {
   group: GroupByNode,
   stats: StatsNode,
   ttest: TTestNode,
-/*   sort: SortNode,
-  javascript: JavascriptNode,
-  merge: MergeNode,
-  group: GroupNode,
-  transpose: TransposeNode,
-  pivot: PivotNode, */
   resizer: ResizerNode,
   circle: CircleNode,
   textinput: TextInputNode,
