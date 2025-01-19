@@ -31,7 +31,7 @@ import ScatterNode from './nodes/Charts/ScatterNode'
 import StatsNode from './nodes/Charts/StatsNode'
 import TTestNode from './nodes/Charts/TTestNode'
 import TableNode from './nodes/Charts/TableNode'
-import ExampleDataNode from './nodes/ExampleDataNode'
+import ExampleDataNode from './nodes/Data/ExampleDataNode'
 import TextNode from './nodes/TextNode'
 import FilterNode from './nodes/Transform/FilterNode'
 import GroupByNode from './nodes/Transform/GroupByNode'
@@ -39,6 +39,9 @@ import SortNode from './nodes/Transform/SortNode'
 import { DataTable } from '../../tasks/components/data-table'
 import { useTheme } from '../../../context/theme-context'
 import RenameNode from './nodes/Transform/RenameNode'
+import URLNode from './nodes/Data/URLNode'
+import { RightSidebarFlow } from './RightSideBarFlow'
+import FlattenNode from './nodes/Transform/FlattenNode'
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -53,9 +56,11 @@ const nodeTypes = {
   pie: PieNode,
   rename: RenameNode,
   line: LineNode,
+  flatten: FlattenNode,
   table: TableNode,
   sort: SortNode,
-  group: GroupByNode,
+  groupby: GroupByNode,
+  URL: URLNode,
   stats: StatsNode,
   ttest: TTestNode,
   resizer: ResizerNode,
@@ -74,12 +79,7 @@ const isValidConnection = (connection: Connection) => {
   return true
 }
 
-function getNodeColumns(data: Dataset) {
-  return Object.keys(data[0]).map((key) => ({
-    accessorKey: key,
-    header: key,
-  }))
-}
+
 
 export default function Flow({
   onChange,
@@ -154,11 +154,7 @@ export default function Flow({
         <Background />
       </ReactFlow>
       {selectedNode?.data.output ? (
-      <div className='absolute bottom-0 right-0 p-4 w-1/5 bg-primary-foreground shadow-lg h-full overflow-auto no-scrollbar'>
-        <DataTable data={selectedNode?.data.output} columns={getNodeColumns(selectedNode?.data.output as any)} 
-          className='w-full'
-        />
-      </div>
+      <RightSidebarFlow selectedNode={selectedNode} />
       ) : null}
     </div>
   )

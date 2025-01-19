@@ -18,6 +18,7 @@ import {
   IconCursorText,
   IconDatabaseLeak,
   IconFilterBolt,
+  IconLambda,
   IconMatrix,
   IconSortAscending,
   IconTable,
@@ -237,13 +238,18 @@ export const NODE_CATALOG: { title: string; items: NodeType[] }[] = [
         icon: IconSortAscending,
       },
       {
+        id: 'flatten',
+        label: 'Flatten',
+        icon: IconLambda
+      },
+      {
         id: 'merge',
         label: 'Merge',
         icon: IconArrowMerge,
       },
 
       {
-        id: 'group',
+        id: 'groupby',
         label: 'Group By',
         icon: IconArrowsDiff,
       },

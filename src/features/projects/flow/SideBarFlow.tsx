@@ -14,7 +14,7 @@ export const SidebarFlow: React.FC<{ onDragStart: (event: any, nodeType: NodeTyp
       <div style={{ padding: 10, zIndex: 9999 }} className={className}>
         <h3>Nodes</h3>
         {NODE_CATALOG.map((node) => (
-          <>
+          <div key={node.title} className='mb-4'>
             <Label>{node.title}</Label>
             {node.items.map((node) => (
               <Badge
@@ -28,7 +28,7 @@ export const SidebarFlow: React.FC<{ onDragStart: (event: any, nodeType: NodeTyp
                 {node.label}
               </Badge>
             ))}
-          </>
+          </div>
         ))}
       </div>
     );
