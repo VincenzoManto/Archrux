@@ -8,18 +8,33 @@ export interface ColumnSelectorProps {
   data: { input: Dataset | null }
   selectedColumn: string
   setSelectedColumn: (column: string) => void
+  acceptEmpty?: boolean
+  additionalColumns?: string[]
 }
 
 export function ColumnSelector({
   data,
   selectedColumn,
   setSelectedColumn,
+  additionalColumns = [],
+  acceptEmpty = false,
 }: ColumnSelectorProps) {
   const [columns, setColumns] = useState<string[]>([])
 
   useEffect(() => {
-    if (data.input) {
-      setColumns(Object.keys(data.input[0] || {}))
+    try {
+      if (data.input) {
+        const keys = Object.keys(data.input[0] || {})
+        if (additionalColumns.length) {
+          setColumns([...additionalColumns, ...keys])
+        } else if (acceptEmpty) {
+          setColumns(['', ...keys])
+        } else {
+          setColumns(keys)
+        }
+      }
+    } catch (error) {
+
     }
   }, [data.input])
 
@@ -67,18 +82,18 @@ export function MultiColumnSelector({
   }
 
   const addColumnSelector = () => {
-    setSelectedColumns([...selectedColumns, ''])
+    setSelectedColumns([...selectedColumns, 'Empty'])
   }
 
   return (
     <>
-      {selectedColumns.map((col, index) => (
+      {selectedColumns.map((col, index) => (        
         <Select
           key={index}
           onValueChange={(e) => handleColumnChange(index, e)}
           value={col}
         >
-          <SelectTrigger>
+          <SelectTrigger className='my-2'>
             <SelectValue placeholder='Column' />
           </SelectTrigger>
           <SelectContent>

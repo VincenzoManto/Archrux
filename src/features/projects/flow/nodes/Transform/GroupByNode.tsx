@@ -50,7 +50,10 @@ function GroupByNode({ id, data }: NodeProps<Node<GroupByNodeProps>>) {
     if (input) {
       setInput(input)
       if (!selectedColumn || !subColumns.length || !selectedAgg) {
-        return
+        return;
+      }
+      if (subColumns.find(e => !e)) {
+        return;
       }
       const grouped = input.reduce((acc: any, row: any) => {
         const key = row[selectedColumn]

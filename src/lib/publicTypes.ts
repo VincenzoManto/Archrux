@@ -49,6 +49,12 @@ export type TransformationNodeProps = {
   output: Dataset | any // Output dataset to send downstream
 }
 
+export type BarNodeProps = VisualizationNodeProps & {
+  xColumn: string
+  yColumns: string[]
+  subCategoryColumn: string
+}
+
 // Visualization Node Input Type
 export type VisualizationNodeProps = {
   input: Dataset | null // Input dataset from upstream

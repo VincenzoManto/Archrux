@@ -7,14 +7,20 @@ import {
   Position,
   useHandleConnections,
   useNodesData,
+  useReactFlow,
 } from '@xyflow/react'
 import * as echarts from 'echarts'
-import { Separator } from '@/components/ui/separator'
-import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '@/lib/publicTypes'
-import { ColumnSelector } from '../ColumnSelector'
+import {
+  BarNodeProps,
+  DataNodeProps,
+  Dataset,
+  TransformationNodeProps,
+} from '@/lib/publicTypes'
 import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { ColumnSelector, MultiColumnSelector } from '../ColumnSelector'
 
-function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
+function BarNode({ id, data }: NodeProps<Node<BarNodeProps>>) {
   const connections = useHandleConnections({
     type: 'target',
   })
@@ -22,35 +28,78 @@ function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     connections.map((connection) => connection.source)
   )
 
-  const [xColumn, setXColumn] = useState<string>('')
-  const [yColumn, setYColumn] = useState<string>('')
+  const [xColumn, setXColumn] = useState<string>(data.xColumn || '')
+  const [yColumns, setYColumns] = useState<string[]>(data.yColumns || [])
+  const [subCategoryColumn, setSubCategoryColumn] = useState<string>(
+    data.subCategoryColumn || 'Column'
+  )
   const chartRef = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState<Dataset>([])
+  const { updateNodeData } = useReactFlow()
 
   useEffect(() => {
     if (!nodesData?.length) return
-    const input = nodesData[0].data?.output;
+    const input = nodesData[0].data?.output
     if (input) {
       setInput(input)
-      if (!xColumn && !yColumn) {
+      if (!xColumn && !yColumns.length) {
         setXColumn(Object.keys(input[0])[0])
-        setYColumn(Object.keys(input[0])[1])
+        setYColumns([Object.keys(input[0])[1]])
       }
     }
-    if (!input || !xColumn || !yColumn) return
+    if (!input || !xColumn || !yColumns.length) return
     const chart = echarts.init(chartRef.current!)
     const xData = input.map((row: any) => row[xColumn] as string)
-    const yData = input.map((row: any) => row[yColumn] as number)
+
+    let series = []
+    if (subCategoryColumn && subCategoryColumn !== 'Column') {
+      const subCategories = Array.from(
+        new Set(input.map((row: any) => row[subCategoryColumn]))
+      )
+      series = subCategories.flatMap((subCategory) =>
+        yColumns.map((yColumn) => ({
+          name: `${subCategory} - ${yColumn}`,
+          type: 'bar',
+          stack: subCategory,
+          data: input
+            .filter((row: any) => row[subCategoryColumn] === subCategory)
+            .map((row: any) => row[yColumn] as number),
+        }))
+      )
+    } else {
+      series = yColumns.map((yColumn) => ({
+        name: yColumn,
+        type: 'bar',
+        data: input.map((row: any) => row[yColumn] as number),
+      }))
+    }
 
     chart.setOption({
-      color: ['#00d86f'],
+      color: [
+        '#00d86f',
+        '#ff5b5b',
+        '#ffcc00',
+        '#00a1ff',
+        '#ff00ff',
+        '#00ff00',
+        '#0000ff',
+        '#ff0000',
+        '#00ffff',
+        '#ffff00',
+      ],
       xAxis: { type: 'category', name: xColumn, data: xData },
-      yAxis: { type: 'value', name: yColumn },
-      series: [{ data: yData, type: 'bar' }],
+      yAxis: { type: 'value' },
+      series: series,
     })
 
+    updateNodeData(id, {
+      xColumn,
+      yColumns,
+      subCategoryColumn,
+      output: input,
+    })
     return () => chart.dispose()
-  }, [nodesData, xColumn, yColumn])
+  }, [nodesData, xColumn, yColumns, subCategoryColumn])
 
   return (
     <div>
@@ -66,10 +115,18 @@ function BarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
         setSelectedColumn={setXColumn}
       />
       <Label>Y-Axis</Label>
+      <MultiColumnSelector
+        data={{ input: input }}
+        selectedColumns={yColumns}
+        setSelectedColumns={setYColumns}
+      />
+      <Label>Subcategory</Label>
       <ColumnSelector
         data={{ input: input }}
-        selectedColumn={yColumn}
-        setSelectedColumn={setYColumn}
+        additionalColumns={['Column']}
+        acceptEmpty={true}
+        selectedColumn={subCategoryColumn}
+        setSelectedColumn={setSubCategoryColumn}
       />
       <div ref={chartRef} style={{ width: 300, height: 300 }}></div>
       <Handle
