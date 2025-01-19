@@ -38,6 +38,7 @@ import GroupByNode from './nodes/Transform/GroupByNode'
 import SortNode from './nodes/Transform/SortNode'
 import { DataTable } from '../../tasks/components/data-table'
 import { useTheme } from '../../../context/theme-context'
+import RenameNode from './nodes/Transform/RenameNode'
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -50,6 +51,7 @@ const nodeTypes = {
   radar: RadarNode,
   histogram: HistogramNode,
   pie: PieNode,
+  rename: RenameNode,
   line: LineNode,
   table: TableNode,
   sort: SortNode,
@@ -125,7 +127,7 @@ export default function Flow({
   return (
     <div className='overflow-hidden relative h-full w-full'>
       <SidebarFlow
-        className='absolute top-0 left-0 h-100 w-auto'
+        className='absolute bottom-0 left-0 p-4 w-1/5 lg:w-auto bg-primary-foreground shadow-lg h-full overflow-auto no-scrollbar'
         onDragStart={(event: React.DragEvent, nodeType) => {
           event.dataTransfer.setData('nodeType', JSON.stringify(nodeType))
         }}

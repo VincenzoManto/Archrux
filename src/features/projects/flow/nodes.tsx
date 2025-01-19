@@ -1,8 +1,34 @@
-import React from 'react';
-import { MarkerType } from '@xyflow/react';
-import { NodeType } from '../../../lib/publicTypes';
-import { IconAnalyze, IconArrowMerge, IconArrowsJoin, IconArrowsSplit, IconBrandJavascript, IconCalendarDue, IconChartBar, IconChartHistogram, IconChartLine, IconChartPie, IconChartRadar, IconChartScatter, IconCubeSpark, IconCubeUnfolded, IconCursorText, IconDatabaseLeak, IconFilterBolt, IconMatrix, IconSortAscending, IconTable, IconTestPipe, IconTextCaption, IconWebhook } from '@tabler/icons-react';
- 
+import React from 'react'
+import {
+  IconAnalyze,
+  IconArrowMerge,
+  IconArrowsDiff,
+  IconArrowsJoin,
+  IconArrowsSplit,
+  IconBrandJavascript,
+  IconCalendarDue,
+  IconChartBar,
+  IconChartHistogram,
+  IconChartLine,
+  IconChartPie,
+  IconChartRadar,
+  IconChartScatter,
+  IconCubeSpark,
+  IconCubeUnfolded,
+  IconCursorText,
+  IconDatabaseLeak,
+  IconFilterBolt,
+  IconMatrix,
+  IconSortAscending,
+  IconTable,
+  IconTestPipe,
+  IconTextCaption,
+  IconTextGrammar,
+  IconWebhook,
+} from '@tabler/icons-react'
+import { MarkerType } from '@xyflow/react'
+import { NodeType } from '../../../lib/publicTypes'
+
 export const nodes = [
   {
     id: 'annotation-1',
@@ -127,8 +153,8 @@ export const nodes = [
     position: { x: 350, y: 500 },
     data: {},
   },
-];
- 
+]
+
 export const edges = [
   {
     id: 'e1-2',
@@ -178,120 +204,154 @@ export const edges = [
     target: '3-1',
     type: 'button',
   },
-];
+]
 
+export const NODE_CATALOG: { title: string; items: NodeType[] }[] = [
+  {
+    title: 'Data',
+    items: [
+      {
+        id: 'exampleData',
+        label: 'Example Data',
+        icon: IconDatabaseLeak,
+      },
 
+      {
+        id: 'URL',
+        label: 'URL',
+        icon: IconWebhook,
+      },
+    ],
+  },
+  {
+    title: 'Alter',
+    items: [
+      {
+        id: 'filter',
+        label: 'Filter',
+        icon: IconFilterBolt,
+      },
+      {
+        id: 'sort',
+        label: 'Sort',
+        icon: IconSortAscending,
+      },
+      {
+        id: 'merge',
+        label: 'Merge',
+        icon: IconArrowMerge,
+      },
 
-export const NODE_CATALOG: NodeType[] = [
-  {
-    id: 'javascript',
-    label: 'JavaScript',
-    icon: IconBrandJavascript
+      {
+        id: 'group',
+        label: 'Group By',
+        icon: IconArrowsDiff,
+      },
+      {
+        id: 'rename',
+        label: 'Rename',
+        icon: IconTextGrammar,
+      },
+      {
+        id: 'split',
+        label: 'Split',
+        icon: IconArrowsSplit,
+      },
+      {
+        id: 'join',
+        label: 'Join',
+        icon: IconArrowsJoin,
+      },
+      {
+        id: 'transpose',
+        label: 'Transpose',
+        icon: IconMatrix,
+      },
+      {
+        id: 'pivot',
+        label: 'Pivot',
+        icon: IconCubeUnfolded,
+      },
+      {
+        id: 'javascript',
+        label: 'JavaScript',
+        icon: IconBrandJavascript,
+      },
+    ],
   },
   {
-    id: 'annotation',
-    label: 'Annotation',
-    icon: IconTextCaption
+    title: 'Charts',
+    items: [
+      {
+        id: 'scatter',
+        label: 'Scatter Chart',
+        icon: IconChartScatter,
+      },
+      {
+        id: 'bar',
+        label: 'Bar Chart',
+        icon: IconChartBar,
+      },
+      {
+        id: 'table',
+        label: 'Table',
+        icon: IconTable,
+      },
+      {
+        id: 'Pie Chart',
+        label: 'Pie Chart',
+        icon: IconChartPie,
+      },
+      {
+        id: 'Histogram',
+        label: 'Histogram',
+        icon: IconChartHistogram,
+      },
+      {
+        id: 'line',
+        label: 'Line Chart',
+        icon: IconChartLine,
+      },
+      {
+        id: 'radar',
+        label: 'Radar Chart',
+        icon: IconChartRadar,
+      },
+    ],
   },
   {
-    id: 'text',
-    label: 'Text',
-    icon: IconCursorText
+    title: 'Compute',
+    items: [
+      {
+        id: 'stats',
+        label: 'Stats',
+        icon: IconAnalyze,
+      },
+      {
+        id: 'ttest',
+        label: 'T-Test',
+        icon: IconTestPipe,
+      },
+    ],
   },
   {
-    id: 'exampleData',
-    label: 'Example Data',
-    icon: IconDatabaseLeak
+    title: 'Annotations',
+    items: [
+      {
+        id: 'annotation',
+        label: 'Annotation',
+        icon: IconTextCaption,
+      },
+      {
+        id: 'text',
+        label: 'Text',
+        icon: IconCursorText,
+      },
+      {
+        id: 'Heatmap',
+        label: 'Heatmap Calendar',
+        icon: IconCalendarDue,
+      },
+    ],
   },
-  {
-    id: 'filter',
-    label: 'Filter',
-    icon: IconFilterBolt
-  },
-  {
-    id: 'sort',
-    label: 'Sort',
-    icon: IconSortAscending,
-  },
-  {
-    id: 'scatter',
-    label: 'Scatter Chart',
-    icon: IconChartScatter,
-  },
-  {
-    id: 'bar',
-    label: 'Bar Chart',
-    icon : IconChartBar
-  },
-  {
-    id: 'table',
-    label: 'Table',
-    icon: IconTable
-
-  },
-  {
-    id: 'Pie Chart',
-    label: 'Pie Chart',
-    icon: IconChartPie
-  },
-  {
-    id: 'Histogram',
-    label: 'Histogram',
-    icon: IconChartHistogram
-  },
-  {
-    id: 'line',
-    label: 'Line Chart',
-    icon: IconChartLine
-  },
-  {
-    id: 'radar',
-    label: 'Radar Chart',
-    icon: IconChartRadar
-  },
-  {
-    id: 'merge',
-    label: 'Merge',
-    icon: IconArrowMerge
-  },
-  {
-    id: 'split',
-    label: 'Split',
-    icon: IconArrowsSplit
-  },
-  {
-    id: 'join',
-    label: 'Join',
-    icon: IconArrowsJoin
-  },
-  {
-    id: 'transpose',
-    label: 'Transpose',
-    icon: IconMatrix
-  },
-  {
-    id: 'pivot',
-    label: 'Pivot',
-    icon: IconCubeUnfolded
-  },
-  {
-    id: 'Heatmap',
-    label: 'Heatmap Calendar',
-    icon: IconCalendarDue
-  },
-  {
-    id: 'URL',
-    label: 'URL',
-    icon: IconWebhook
-  },
-  {
-    id: 'stats',
-    label: 'Stats',
-    icon: IconAnalyze
-  },
-  {
-    id: 'ttest',
-    label: 'T-Test',
-    icon: IconTestPipe
-  }
-];
+]
