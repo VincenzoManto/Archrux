@@ -41,6 +41,9 @@ import URLNode from './nodes/Data/URLNode'
 import { RightSidebarFlow } from './RightSideBarFlow'
 import FlattenNode from './nodes/Transform/FlattenNode'
 import CropNode from './nodes/Transform/CropNode'
+import AddColumnNode from './nodes/Transform/AddColumnNode'
+import SheetNode from './nodes/Data/SheetNode'
+import FileDataNode from './nodes/Data/FileDataNode'
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -59,6 +62,7 @@ const nodeTypes = {
   flatten: FlattenNode,
   table: TableNode,
   sort: SortNode,
+  addColumn: AddColumnNode,
   groupby: GroupByNode,
   URL: URLNode,
   stats: StatsNode,
@@ -66,6 +70,8 @@ const nodeTypes = {
   resizer: ResizerNode,
   circle: CircleNode,
   textinput: TextInputNode,
+  sheet: SheetNode,
+  file: FileDataNode,
 }
 
 const edgeTypes = {

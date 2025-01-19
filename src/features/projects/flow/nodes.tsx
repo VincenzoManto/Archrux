@@ -13,11 +13,14 @@ import {
   IconChartPie,
   IconChartRadar,
   IconChartScatter,
+  IconColumnInsertRight,
   IconColumnRemove,
   IconCubeSpark,
   IconCubeUnfolded,
   IconCursorText,
   IconDatabaseLeak,
+  IconFileImport,
+  IconFileSpreadsheet,
   IconFilterBolt,
   IconLambda,
   IconMatrix,
@@ -223,6 +226,16 @@ export const NODE_CATALOG: { title: string; items: NodeType[] }[] = [
         label: 'URL',
         icon: IconWebhook,
       },
+      {
+        id: 'file',
+        label: 'File',
+        icon: IconFileImport
+      },
+      {
+        id: 'sheet',
+        label: 'Sheet',
+        icon: IconFileSpreadsheet,
+      }
     ],
   },
   {
@@ -252,6 +265,11 @@ export const NODE_CATALOG: { title: string; items: NodeType[] }[] = [
         id: 'crop',
         label: 'Crop',
         icon: IconColumnRemove,
+      },
+      {
+        id: 'addColumn',
+        label: 'Add Column',
+        icon: IconColumnInsertRight
       },
       {
         id: 'groupby',

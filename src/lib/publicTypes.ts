@@ -30,6 +30,12 @@ export type URLDataNodeProps = DataNodeProps & {
   headers: string
 }
 
+export type SheetDataNodeProps = DataNodeProps & {
+  spreadsheetId: string
+  range: string
+  apiKey: string
+}
+
 export type DataNodeProps = {
     output: Dataset | any
 }
@@ -42,6 +48,11 @@ export type GroupByNodeProps = TransformationNodeProps & {
 
 export type CropNodeProps = TransformationNodeProps & {
   selectedColumns: string[]
+}
+
+export type AddColumnNodeProps = TransformationNodeProps & {
+  newColumnName: string
+  formula: string
 }
 
 // Transformation Node Input Type
