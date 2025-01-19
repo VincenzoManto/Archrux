@@ -40,6 +40,10 @@ export type GroupByNodeProps = TransformationNodeProps & {
   subColumns: string[]
 }
 
+export type CropNodeProps = TransformationNodeProps & {
+  selectedColumns: string[]
+}
+
 // Transformation Node Input Type
 export type TransformationNodeProps = {
   input: Dataset // Input dataset from upstream

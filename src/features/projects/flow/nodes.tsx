@@ -13,6 +13,7 @@ import {
   IconChartPie,
   IconChartRadar,
   IconChartScatter,
+  IconColumnRemove,
   IconCubeSpark,
   IconCubeUnfolded,
   IconCursorText,
@@ -247,7 +248,11 @@ export const NODE_CATALOG: { title: string; items: NodeType[] }[] = [
         label: 'Merge',
         icon: IconArrowMerge,
       },
-
+      {
+        id: 'crop',
+        label: 'Crop',
+        icon: IconColumnRemove,
+      },
       {
         id: 'groupby',
         label: 'Group By',

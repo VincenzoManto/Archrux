@@ -12,10 +12,9 @@ import {
   Edge,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { Dataset, NodeType, Structure } from '../../../lib/publicTypes'
+import { NodeType, Structure } from '../../../lib/publicTypes'
 import { SidebarFlow } from './SideBarFlow'
 import './flow.css'
-import { nodes as initialNodes, edges as initialEdges } from './nodes'
 import AnnotationNode from './nodes/Basic/AnnotationNode'
 import ButtonEdge from './nodes/Basic/ButtonEdge'
 import CircleNode from './nodes/Basic/CircleNode'
@@ -36,12 +35,12 @@ import TextNode from './nodes/TextNode'
 import FilterNode from './nodes/Transform/FilterNode'
 import GroupByNode from './nodes/Transform/GroupByNode'
 import SortNode from './nodes/Transform/SortNode'
-import { DataTable } from '../../tasks/components/data-table'
 import { useTheme } from '../../../context/theme-context'
 import RenameNode from './nodes/Transform/RenameNode'
 import URLNode from './nodes/Data/URLNode'
 import { RightSidebarFlow } from './RightSideBarFlow'
 import FlattenNode from './nodes/Transform/FlattenNode'
+import CropNode from './nodes/Transform/CropNode'
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -55,6 +54,7 @@ const nodeTypes = {
   histogram: HistogramNode,
   pie: PieNode,
   rename: RenameNode,
+  crop: CropNode,
   line: LineNode,
   flatten: FlattenNode,
   table: TableNode,
