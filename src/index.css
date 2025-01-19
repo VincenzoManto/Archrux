@@ -143,3 +143,18 @@
 p a {
   border-bottom: 1px dashed;
 }
+
+/* Set scrollbar as thin */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--foreground));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}

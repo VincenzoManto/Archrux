@@ -23,12 +23,11 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { Task } from '../data/schema'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: Task
+  currentRow?: any
 }
 
 const formSchema = z.object({
@@ -44,12 +43,7 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
 
   const form = useForm<TasksForm>({
     resolver: zodResolver(formSchema),
-    defaultValues: currentRow ?? {
-      title: '',
-      status: '',
-      label: '',
-      priority: '',
-    },
+    defaultValues: currentRow ?? {},
   })
 
   const onSubmit = (data: TasksForm) => {
