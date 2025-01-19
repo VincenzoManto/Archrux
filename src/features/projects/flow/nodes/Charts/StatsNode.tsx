@@ -58,7 +58,7 @@ function StatsNode(props: NodeProps<Node<VisualizationNodeProps>>) {
     setStats(stats)
 
     return () => {}
-  }, [nodesData, columns])
+  }, [nodesData])
 
   const computeStats = (data: Dataset) => {
     const flattenedData = data.flatMap(Object.values).map(Number).filter((value) => !isNaN(value))

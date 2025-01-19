@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { use, useCallback, useEffect } from 'react'
 import {
   ReactFlow,
   addEdge,
@@ -9,9 +9,10 @@ import {
   useEdgesState,
   Node,
   Connection,
+  Edge,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { NodeType } from '../../../lib/publicTypes'
+import { NodeType, Structure } from '../../../lib/publicTypes'
 import { SidebarFlow } from './SideBarFlow'
 import './flow.css'
 import { nodes as initialNodes, edges as initialEdges } from './nodes'
@@ -69,13 +70,23 @@ const isValidConnection = (connection: Connection) => {
   return true
 }
 
-export default function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+export default function Flow({
+  onChange,
+  structure
+}: {
+  onChange: (nodes: Node[], edges: Edge[]) => void,
+  structure: Structure
+}) {
+  const [nodes, setNodes, onNodesChange] = useNodesState(structure.nodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(structure.edges)
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds) as any),
     []
   )
+
+  useEffect(() => {
+    onChange(nodes, edges)
+  }, [nodes, edges])
 
   const addNode = (node: Node) => {
     setNodes((prev) => [...prev, node] as any)

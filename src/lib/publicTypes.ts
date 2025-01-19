@@ -1,3 +1,4 @@
+import { Edge, Node } from "@xyflow/react"
 
 export interface Project {
   name: string
@@ -49,3 +50,9 @@ export type NodeType = {
   label: string;
   icon: any;
 };
+
+
+export type Structure = {
+  nodes: Node[]
+  edges: Edge[]
+}
