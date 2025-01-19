@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react'
-import { IconGripVertical } from '@tabler/icons-react'
+import { ColumnDef } from '@tanstack/react-table'
 import {
   Handle,
   Node,
@@ -8,12 +8,16 @@ import {
   useHandleConnections,
   useNodesData,
 } from '@xyflow/react'
-import { Separator } from '@/components/ui/separator'
-import { DataNodeProps, Dataset, DatasetRow, TransformationNodeProps, VisualizationNodeProps } from '@/lib/publicTypes'
-import { DataTable } from '../../../../tasks/components/data-table'
-import { ColumnDef } from '@tanstack/react-table'
 import * as ss from 'simple-statistics'
+import {
+  DataNodeProps,
+  Dataset,
+  DatasetRow,
+  TransformationNodeProps,
+  VisualizationNodeProps,
+} from '@/lib/publicTypes'
 import { Label } from '../../../../../components/ui/label'
+import { TopHandle } from '../TopHandle'
 
 function StatsNode(props: NodeProps<Node<VisualizationNodeProps>>) {
   const connections = useHandleConnections({
@@ -41,7 +45,7 @@ function StatsNode(props: NodeProps<Node<VisualizationNodeProps>>) {
 
   useEffect(() => {
     if (!nodesData?.length) return
-    const input = nodesData[0].data?.output;
+    const input = nodesData[0].data?.output
     if (input) {
       setInput(input)
     } else {
@@ -61,7 +65,10 @@ function StatsNode(props: NodeProps<Node<VisualizationNodeProps>>) {
   }, [nodesData])
 
   const computeStats = (data: Dataset) => {
-    const flattenedData = data.flatMap(Object.values).map(Number).filter((value) => !isNaN(value))
+    const flattenedData = data
+      .flatMap(Object.values)
+      .map(Number)
+      .filter((value) => !isNaN(value))
     return {
       mean: ss.mean(flattenedData),
       median: ss.median(flattenedData),
@@ -79,15 +86,14 @@ function StatsNode(props: NodeProps<Node<VisualizationNodeProps>>) {
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Stats
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Stats' />
       <div className='stats grid grid-cols-3 gap-4'>
         {Object.entries(stats).map(([key, value]) => (
           <div key={key}>
-        <Label className='text-center capitalize'>{key.replace(/([A-Z])/g, ' $1')}</Label> {value.toFixed(4)}
+            <Label className='text-center capitalize'>
+              {key.replace(/([A-Z])/g, ' $1')}
+            </Label>{' '}
+            {value.toFixed(4)}
           </div>
         ))}
       </div>

@@ -5,6 +5,7 @@ import { IconGripVertical } from '@tabler/icons-react'
 import { Separator } from '@radix-ui/react-separator'
 import { Input } from '../../../../../components/ui/input'
 import {convertXML} from 'simple-xml-to-json'
+import { TopHandle } from '../TopHandle'
 
 /* function xmlToJson(xml) {
   if (xml.nodeType === 1) {
@@ -81,12 +82,7 @@ function FileDataNode({
   }
 
   return (
-    <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        File Data Collector
-        <Separator className='shadow' />
-      </div>
+    <div><TopHandle name='File Data Collector' />
       <div className='flex flex-col gap-3'>
         <Input
           type='file'

@@ -111,6 +111,21 @@ export default function Flow({
     setNodes((prev) => [...prev, node] as any)
   }
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Delete' && selectedNode) {
+        setNodes((nds) => nds.filter((node) => node.id !== selectedNode.id));
+        setEdges((eds) => eds.filter((edge) => edge.source !== selectedNode.id && edge.target !== selectedNode.id));
+        setSelectedNode(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedNode]);
+
   const onDrop = (event: React.DragEvent, addNode: (node: Node) => void) => {
     event.preventDefault()
     const nodeType: NodeType = JSON.parse(

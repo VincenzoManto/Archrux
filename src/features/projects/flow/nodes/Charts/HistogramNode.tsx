@@ -9,11 +9,17 @@ import {
   useNodesData,
 } from '@xyflow/react'
 import * as echarts from 'echarts'
-import { Separator } from '@/components/ui/separator'
-import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '@/lib/publicTypes'
-import { ColumnSelector } from '../ColumnSelector'
-import { Label } from '@/components/ui/label'
+import {
+  DataNodeProps,
+  Dataset,
+  TransformationNodeProps,
+  VisualizationNodeProps,
+} from '@/lib/publicTypes'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { ColumnSelector } from '../ColumnSelector'
+import { TopHandle } from '../TopHandle'
 
 function HistogramNode(props: NodeProps<Node<VisualizationNodeProps>>) {
   const connections = useHandleConnections({
@@ -30,7 +36,7 @@ function HistogramNode(props: NodeProps<Node<VisualizationNodeProps>>) {
 
   useEffect(() => {
     if (!nodesData?.length) return
-    const input = nodesData[0].data?.output;
+    const input = nodesData[0].data?.output
     if (input) {
       setInput(input)
       if (!categoryColumn) {
@@ -55,7 +61,9 @@ function HistogramNode(props: NodeProps<Node<VisualizationNodeProps>>) {
       color: ['#00d86f'],
       xAxis: {
         type: 'category',
-        data: Array.from({ length: bins }, (_, i) => (min + i * binWidth).toFixed(2)),
+        data: Array.from({ length: bins }, (_, i) =>
+          (min + i * binWidth).toFixed(2)
+        ),
         name: categoryColumn,
       },
       yAxis: {
@@ -75,11 +83,7 @@ function HistogramNode(props: NodeProps<Node<VisualizationNodeProps>>) {
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Histogram
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Histogram' />
       <Label>Category</Label>
       <ColumnSelector
         data={{ input: input }}

@@ -1,15 +1,13 @@
 import { memo, useEffect, useState } from 'react'
-import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react'
-import { SheetDataNodeProps } from '../../../../../lib/publicTypes'
-import { IconGripVertical } from '@tabler/icons-react'
-import { Separator } from '@radix-ui/react-separator'
 import axios from 'axios'
+import { Separator } from '@radix-ui/react-separator'
+import { IconGripVertical } from '@tabler/icons-react'
+import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react'
 import { Input } from '../../../../../components/ui/input'
+import { SheetDataNodeProps } from '../../../../../lib/publicTypes'
+import { TopHandle } from '../TopHandle'
 
-function SheetNode({
-  id,
-  data
-}: NodeProps<Node<SheetDataNodeProps>>) {
+function SheetNode({ id, data }: NodeProps<Node<SheetDataNodeProps>>) {
   const { updateNodeData } = useReactFlow()
   const [spreadsheetId, setSpreadsheetId] = useState(data.spreadsheetId || '')
   const [range, setRange] = useState(data.range || '')
@@ -18,15 +16,18 @@ function SheetNode({
     if (spreadsheetId && range) {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`, {
-            headers: {
-              'Authorization': `Bearer ${data.apiKey}`
+          const response = await axios.get(
+            `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`,
+            {
+              headers: {
+                Authorization: `Bearer ${data.apiKey}`,
+              },
             }
-          })
-          updateNodeData(id, { 
+          )
+          updateNodeData(id, {
             spreadsheetId,
             range,
-            output: response.data.values 
+            output: response.data.values,
           })
         } catch (error) {
           console.error('Error fetching data:', error)
@@ -38,11 +39,7 @@ function SheetNode({
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Spreadsheet Data Collector
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Spreadsheet Data Collector' />
       <div className='flex flex-col gap-3'>
         <Input
           type='text'
@@ -59,7 +56,11 @@ function SheetNode({
           className='input'
         />
       </div>
-      <Handle type='source' className='custom-handle' position={Position.Right} />
+      <Handle
+        type='source'
+        className='custom-handle'
+        position={Position.Right}
+      />
     </div>
   )
 }

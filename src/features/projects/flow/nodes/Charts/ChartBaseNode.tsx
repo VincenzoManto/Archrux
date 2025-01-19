@@ -19,6 +19,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { ColumnSelector, MultiColumnSelector } from '../ColumnSelector'
+import { TopHandle } from '../TopHandle'
 
 function ChartBaseNode({ id, data, type }: NodeProps<Node<BarNodeProps>>) {
   const connections = useHandleConnections({
@@ -103,11 +104,7 @@ function ChartBaseNode({ id, data, type }: NodeProps<Node<BarNodeProps>>) {
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Bar
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Bar' />
       <Label>X-Axis</Label>
       <ColumnSelector
         data={{ input: input }}

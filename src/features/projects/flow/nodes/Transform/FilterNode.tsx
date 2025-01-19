@@ -1,23 +1,32 @@
 import { memo, useEffect, useState } from 'react'
-import { Handle, Node, NodeProps, Position, useHandleConnections, useNodesData, useReactFlow } from '@xyflow/react'
-import { DataNodeProps, Dataset, TransformationNodeProps } from '@/lib/publicTypes'
-import { ColumnSelector, OperatorSelector } from '../ColumnSelector'
-import { Label } from '@/components/ui/label'
-import { IconGripVertical } from '@tabler/icons-react'
 import { Separator } from '@radix-ui/react-separator'
+import { IconGripVertical } from '@tabler/icons-react'
+import {
+  Handle,
+  Node,
+  NodeProps,
+  Position,
+  useHandleConnections,
+  useNodesData,
+  useReactFlow,
+} from '@xyflow/react'
+import {
+  DataNodeProps,
+  Dataset,
+  TransformationNodeProps,
+} from '@/lib/publicTypes'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { ColumnSelector, OperatorSelector } from '../ColumnSelector'
+import { TopHandle } from '../TopHandle'
 
-function FilterNode({
-  id,
-  data,
-}: NodeProps<Node<TransformationNodeProps>>) {
-
-    const connections = useHandleConnections({
-      type: 'target',
-    })
-    const nodesData = useNodesData<Node<DataNodeProps | TransformationNodeProps>>(
-      connections.map((connection) => connection.source)
-    )
+function FilterNode({ id, data }: NodeProps<Node<TransformationNodeProps>>) {
+  const connections = useHandleConnections({
+    type: 'target',
+  })
+  const nodesData = useNodesData<Node<DataNodeProps | TransformationNodeProps>>(
+    connections.map((connection) => connection.source)
+  )
 
   const { updateNodeData } = useReactFlow()
   const [selectedColumn, setSelectedColumn] = useState<string>('')
@@ -27,7 +36,7 @@ function FilterNode({
 
   useEffect(() => {
     if (!nodesData?.length) return
-    const input = nodesData[0].data?.output;
+    const input = nodesData[0].data?.output
     if (input) {
       setInput(input)
       const filtered = input.filter((row: any) => {
@@ -38,9 +47,15 @@ function FilterNode({
           case '<':
             return row[selectedColumn] < +value
           case '==':
-            return row[selectedColumn] === +value || row[selectedColumn]?.toString() === value
+            return (
+              row[selectedColumn] === +value ||
+              row[selectedColumn]?.toString() === value
+            )
           case '!=':
-            return row[selectedColumn] !== +value && row[selectedColumn]?.toString() !== value
+            return (
+              row[selectedColumn] !== +value &&
+              row[selectedColumn]?.toString() !== value
+            )
           case '>=':
             return row[selectedColumn] >= +value
           case '<=':
@@ -63,11 +78,7 @@ function FilterNode({
 
   return (
     <div>
-    <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-      <IconGripVertical size={12} className='inline' />
-      Filter
-      <Separator className='shadow' />
-    </div>
+      <TopHandle name='Filter' />
       <Label>Column</Label>
       <ColumnSelector
         data={{ input }}
@@ -83,10 +94,19 @@ function FilterNode({
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder='Value'/>
-      <Handle type='target' className='custom-handle' position={Position.Left} />
-      <Handle type='source' className='custom-handle' position={Position.Right} />
+        placeholder='Value'
+      />
+      <Handle
+        type='target'
+        className='custom-handle'
+        position={Position.Left}
+      />
+      <Handle
+        type='source'
+        className='custom-handle'
+        position={Position.Right}
+      />
     </div>
   )
 }
-export default memo(FilterNode);
+export default memo(FilterNode)

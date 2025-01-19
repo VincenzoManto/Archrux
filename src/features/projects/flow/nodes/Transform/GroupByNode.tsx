@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ColumnSelector, MultiColumnSelector } from '../ColumnSelector'
+import { TopHandle } from '../TopHandle'
 
 function GroupByNode({ id, data }: NodeProps<Node<GroupByNodeProps>>) {
   const connections = useHandleConnections({
@@ -50,10 +51,10 @@ function GroupByNode({ id, data }: NodeProps<Node<GroupByNodeProps>>) {
     if (input) {
       setInput(input)
       if (!selectedColumn || !subColumns.length || !selectedAgg) {
-        return;
+        return
       }
-      if (subColumns.find(e => !e)) {
-        return;
+      if (subColumns.find((e) => !e)) {
+        return
       }
       const grouped = input.reduce((acc: any, row: any) => {
         const key = row[selectedColumn]
@@ -105,11 +106,11 @@ function GroupByNode({ id, data }: NodeProps<Node<GroupByNodeProps>>) {
               break
           }
         })
-      });
+      })
       const output = Object.keys(grouped).map((key) => ({
         [selectedColumn]: key,
         ...grouped[key],
-      }));
+      }))
       updateNodeData(id, {
         selectedColumn,
         selectedAgg,
@@ -121,11 +122,7 @@ function GroupByNode({ id, data }: NodeProps<Node<GroupByNodeProps>>) {
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Group By
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Group By' />
       <Label>Column</Label>
       <ColumnSelector
         data={{ input }}

@@ -9,10 +9,16 @@ import {
   useNodesData,
 } from '@xyflow/react'
 import * as echarts from 'echarts'
-import { Separator } from '@/components/ui/separator'
-import { DataNodeProps, Dataset, TransformationNodeProps, VisualizationNodeProps } from '@/lib/publicTypes'
-import { ColumnSelector, MultiColumnSelector } from '../ColumnSelector'
+import {
+  DataNodeProps,
+  Dataset,
+  TransformationNodeProps,
+  VisualizationNodeProps,
+} from '@/lib/publicTypes'
 import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { ColumnSelector, MultiColumnSelector } from '../ColumnSelector'
+import { TopHandle } from '../TopHandle'
 
 function RadarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
   const connections = useHandleConnections({
@@ -29,7 +35,7 @@ function RadarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
 
   useEffect(() => {
     if (!nodesData?.length) return
-    const input = nodesData[0].data?.output;
+    const input = nodesData[0].data?.output
     if (input) {
       setInput(input)
       if (!categoryColumn && !valueColumns.length) {
@@ -63,11 +69,7 @@ function RadarNode(props: NodeProps<Node<VisualizationNodeProps>>) {
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Radar
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Radar' />
       <Label>Category</Label>
       <ColumnSelector
         data={{ input: input }}

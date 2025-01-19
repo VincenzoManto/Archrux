@@ -1,6 +1,4 @@
 import { memo, useEffect, useState } from 'react'
-import { Separator } from '@radix-ui/react-separator'
-import { IconGripVertical } from '@tabler/icons-react'
 import {
   Handle,
   Node,
@@ -18,7 +16,7 @@ import {
 } from '@/lib/publicTypes'
 import { Label } from '@/components/ui/label'
 import { Input } from '../../../../../components/ui/input'
-import { ColumnSelector } from '../ColumnSelector'
+import { TopHandle } from '../TopHandle'
 
 function FlattenNode({ id, data }: NodeProps<Node<TransformationNodeProps>>) {
   const connections = useHandleConnections({
@@ -46,7 +44,7 @@ function FlattenNode({ id, data }: NodeProps<Node<TransformationNodeProps>>) {
         for (let i = 0; i < depth; i++) {
           flattened = _.flatMap(flattened, (row: any) => {
             if (!row) {
-              return row;
+              return row
             }
             const keys = Object.keys(row)
             keys.forEach((key) => {
@@ -69,11 +67,7 @@ function FlattenNode({ id, data }: NodeProps<Node<TransformationNodeProps>>) {
 
   return (
     <div>
-      <div className='drag-handle__custom border-b py-2 text-left mb-2'>
-        <IconGripVertical size={12} className='inline' />
-        Flatten
-        <Separator className='shadow' />
-      </div>
+      <TopHandle name='Flatten' />
       <Label>Depth</Label>
       <Input
         type='number'
