@@ -7,7 +7,7 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
 export const columns: ColumnDef<Task>[] = [
-  {
+  /* {
     id: 'select',
     header: ({ table }) => (
       <Checkbox
@@ -115,5 +115,5 @@ export const columns: ColumnDef<Task>[] = [
   {
     id: 'actions',
     cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  }, */
 ]
