@@ -154,7 +154,7 @@ export default function Flow({
         <Background />
       </ReactFlow>
       {selectedNode?.data.output ? (
-      <RightSidebarFlow selectedNode={selectedNode} />
+      <RightSidebarFlow selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
       ) : null}
     </div>
   )

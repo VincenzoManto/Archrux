@@ -68,7 +68,7 @@ function URLDataNode({
           </Select>
           </div>
           <Input
-            type='text'
+            type='url'
             placeholder='URL'
             value={url}
             onChange={(e) => setUrl(e.target.value)}
