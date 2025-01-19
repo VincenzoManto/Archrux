@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select'
 import { Dataset } from '../../../../lib/publicTypes'
-import { FormLabel, FormControl } from '../../../../components/ui/form'
-import { Label } from '../../../../components/ui/label'
+import { Button } from '../../../../components/ui/button'
+import { IconPlus } from '@tabler/icons-react'
 
 export interface ColumnSelectorProps {
   data: { input: Dataset | null }
@@ -91,7 +91,9 @@ export function MultiColumnSelector({
         </Select>
       ))}
       {selectedColumns.length < columns.length && (
-        <button onClick={addColumnSelector}>Add Column</button>
+        <Button onClick={addColumnSelector} className='w-full p-1 my-2' variant='secondary'>
+          <IconPlus size={16} className='inline' />
+           Column</Button>
       )}
     </>
   )

@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react'
 import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react'
-import { DataNodeProps } from '../../../../lib/publicTypes'
+import { DataNodeProps } from '../../../../../lib/publicTypes'
 import { IconGripVertical } from '@tabler/icons-react'
 import { Separator } from '@radix-ui/react-separator'
 

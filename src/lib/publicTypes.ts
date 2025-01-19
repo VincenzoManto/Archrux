@@ -23,8 +23,21 @@ export type DatasetRow = {
 // Dataset Type
 export type Dataset = DatasetRow[]
 
+export type URLDataNodeProps = DataNodeProps & {
+  url: string
+  method: string
+  body: string
+  headers: string
+}
+
 export type DataNodeProps = {
     output: Dataset | any
+}
+
+export type GroupByNodeProps = TransformationNodeProps & {
+  selectedColumn: string
+  selectedAgg: string
+  subColumns: string[]
 }
 
 // Transformation Node Input Type
