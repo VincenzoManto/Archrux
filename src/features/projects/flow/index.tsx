@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect } from 'react'
+import React, { use, useCallback, useEffect, useState } from 'react'
 import {
   ReactFlow,
   addEdge,
@@ -12,7 +12,7 @@ import {
   Edge,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { NodeType, Structure } from '../../../lib/publicTypes'
+import { Dataset, NodeType, Structure } from '../../../lib/publicTypes'
 import { SidebarFlow } from './SideBarFlow'
 import './flow.css'
 import { nodes as initialNodes, edges as initialEdges } from './nodes'
@@ -36,6 +36,8 @@ import TextNode from './nodes/TextNode'
 import FilterNode from './nodes/Transform/FilterNode'
 import GroupByNode from './nodes/Transform/GroupByNode'
 import SortNode from './nodes/Transform/SortNode'
+import { DataTable } from '../../tasks/components/data-table'
+import { useTheme } from '../../../context/theme-context'
 
 const nodeTypes = {
   annotation: AnnotationNode,
@@ -70,6 +72,13 @@ const isValidConnection = (connection: Connection) => {
   return true
 }
 
+function getNodeColumns(data: Dataset) {
+  return Object.keys(data[0]).map((key) => ({
+    accessorKey: key,
+    header: key,
+  }))
+}
+
 export default function Flow({
   onChange,
   structure
@@ -79,6 +88,8 @@ export default function Flow({
 }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(structure.nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(structure.edges)
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const {theme} = useTheme()
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds) as any),
     []
@@ -112,7 +123,7 @@ export default function Flow({
   }
 
   return (
-    <>
+    <div className='overflow-hidden relative h-full w-full'>
       <SidebarFlow
         className='absolute top-0 left-0 h-100 w-auto'
         onDragStart={(event: React.DragEvent, nodeType) => {
@@ -125,8 +136,9 @@ export default function Flow({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={(_: React.MouseEvent, element: Node) => setSelectedNode(element)}
         fitView
-        colorMode='dark'
+        colorMode={theme}
         isValidConnection={isValidConnection}
         onDrop={(event) => onDrop(event, addNode)}
         onDragOver={(event) => event.preventDefault()}
@@ -139,6 +151,13 @@ export default function Flow({
         <Controls />
         <Background />
       </ReactFlow>
-    </>
+      {selectedNode?.data.output ? (
+      <div className='absolute bottom-0 right-0 p-4 w-1/5 bg-primary-foreground shadow-lg h-full overflow-auto no-scrollbar'>
+        <DataTable data={selectedNode?.data.output} columns={getNodeColumns(selectedNode?.data.output as any)} 
+          className='w-full'
+        />
+      </div>
+      ) : null}
+    </div>
   )
 }
